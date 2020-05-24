@@ -15,6 +15,6 @@ export default class SuspendCommand extends Command {
     const baseDir = flags.path || process.cwd()
 
     const igniter = new Igniter(new Environment(baseDir))
-    igniter.vagrant.suspend()
+    igniter.provider.suspend()
   }
 }
