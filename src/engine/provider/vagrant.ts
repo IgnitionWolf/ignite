@@ -1,9 +1,12 @@
-import {Provider, ProviderStatus} from './provider'
-import {execSync} from 'child_process'
 import WorkingDirectory from '../../environment/working-directory'
-import * as SSHConfig from 'ssh-config'
+import {Provider, ProviderStatus} from './provider'
+import {Client, ClientChannel} from 'ssh2'
+import {execSync} from 'child_process'
 import {CLIError} from '@oclif/errors'
-import {Client} from 'ssh2'
+import * as fs from 'fs'
+
+// @ts-ignore
+import * as SSHConfig from 'ssh-config'
 
 export default class VagrantProvider implements Provider {
   workingDirectory: WorkingDirectory
@@ -51,6 +54,12 @@ export default class VagrantProvider implements Provider {
     if (buffer.indexOf('running') !== -1) {
       return ProviderStatus.Running
     }
+    if (buffer.indexOf('off') !== -1) {
+      return ProviderStatus.Offline
+    }
+    if (buffer.indexOf('saved') !== -1) {
+      return ProviderStatus.Suspended
+    }
     return ProviderStatus.Unknown
   }
 
@@ -60,7 +69,7 @@ export default class VagrantProvider implements Provider {
    */
   isInstalled(): boolean {
     const buffer = this.exec('vagrant')
-    return buffer.indexOf('--help') !== -1
+    return (buffer.indexOf('--help') !== -1)
   }
 
   /**
@@ -70,17 +79,21 @@ export default class VagrantProvider implements Provider {
   ssh(): void {
     const connection = this.sshConfig(true)
 
-    Client.shell(function (err: Error, stream: any) {
-      if (err) throw err
+    const conn = new Client()
+    conn.on('ready', () => {
+      conn.shell((err: Error | undefined, stream: ClientChannel) => {
+        if (err) throw err
 
-      process.stdin.setRawMode(true)
-      process.stdin.pipe(stream)
-      stream.pipe(process.stdout)
-      stream.stderr.pipe(process.stderr)
+        // @ts-ignore
+        process.stdin.setRawMode(true)
+        process.stdin.pipe(stream)
+        stream.pipe(process.stdout)
+        stream.stderr.pipe(process.stderr)
 
-      stream.on('close', function () {
-        Client.end()
-        process.stdin.end()
+        stream.on('close', function () {
+          process.stdin.end()
+          conn.end()
+        })
       })
     }).connect(connection)
   }
@@ -110,13 +123,13 @@ export default class VagrantProvider implements Provider {
         } else if (line.param === 'User') {
           result.username = line.value
         } else if (line.param === 'IdentityFile') {
-          result.privateKey = line.value
+          result.privateKey = fs.readFileSync(line.value).toString('UTF-8')
         }
       }
       return result
     }
 
-    return SSHConfig.stringify(config)
+    return config
   }
 
   /**
@@ -125,7 +138,7 @@ export default class VagrantProvider implements Provider {
    * @return {string} output buffer in string
    */
   exec(command: string): string {
-    const directory = this.workingDirectory.directory
+    const directory = '/home/mauricio/projects/vagrant' // this.workingDirectory.directory
     return execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
   }
 }

@@ -23,6 +23,8 @@ export default class Environment {
 
       this.metafile = new Metafile(this.directory, this)
       this.metafile.load(true) // this can be created on the go
+
+      this.load()
     }
 
     /**
@@ -37,7 +39,6 @@ export default class Environment {
       const defaultName = (require('random-words'))({exactly: 3, join: '-'})
       this.name = name ?? defaultName
       this.id = uuidv4()
-      this.load()
     }
 
     /**
@@ -47,6 +48,7 @@ export default class Environment {
       if (this.isSetup()) {
         this.workingDirectory.load(this.metafile.get('path'))
       } else {
+        this.create()
         this.workingDirectory.create()
         this.metafile.set('path', this.workingDirectory.directory)
         this.metafile.save()
@@ -58,7 +60,7 @@ export default class Environment {
      * @return {boolean} -
      */
     isSetup(): boolean {
-      return this.id !== null
+      return this.metafile.get('path') !== null
     }
 
     /**

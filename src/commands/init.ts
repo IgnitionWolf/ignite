@@ -7,7 +7,6 @@ export default class InitCommand extends Command {
 
   static flags = {
     path: flags.string({char: 'p', description: 'Target path (optional)'}),
-    deps: flags.string({char: 'd', description: 'Required dependencies (optional)'}),
   }
 
   static args = [{name: 'name'}]

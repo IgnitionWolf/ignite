@@ -10,7 +10,7 @@ import * as path from 'path'
 export default class Metafile extends Basefile {
   filename = path.join('.ignite', 'config.yaml')
 
-  settings = {id: '', name: '', path: ''}
+  settings = {id: null, name: null, path: null}
 
   create() {
     const target = this.getPath()

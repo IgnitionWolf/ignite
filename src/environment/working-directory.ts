@@ -6,7 +6,7 @@ import * as os from 'os'
 import * as fs from 'fs'
 
 export default class WorkingDirectory {
-  static template = ''
+  static template = path.join(path.parse(process.mainModule.filename).dir, '..', 'environment')
 
   static directoriesPath = path.join(os.homedir(), '.ignite')
 
@@ -29,7 +29,7 @@ export default class WorkingDirectory {
       if (createIfMissing === true) {
         this.create()
       } else {
-        throw new CLIError('The working directory does not exist.')
+        throw new CLIError("This environment hasn't been ignited, you need to 'ignite up' first.")
       }
     }
 
