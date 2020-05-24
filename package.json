@@ -1,0 +1,70 @@
+{
+  "name": "ignite",
+  "version": "1.0.0",
+  "author": "Ignite Wolf",
+  "bin": {
+    "ignite": "./bin/run"
+  },
+  "bugs": "https://github.com/IgniteWolf/ignite/issues",
+  "dependencies": {
+    "@oclif/command": "^1.6.1",
+    "@oclif/config": "^1.15.1",
+    "@oclif/plugin-help": "^3.0.1",
+    "cli-ux": "^5.4.6",
+    "fs-extra": "^9.0.0",
+    "lodash": "^4.17.15",
+    "random-words": "^1.1.1",
+    "tslib": "^1.13.0",
+    "uuid": "^8.1.0",
+    "yaml": "^1.10.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.22.2",
+    "@oclif/test": "^1.2.6",
+    "@types/chai": "^4.2.11",
+    "@types/fs-extra": "^9.0.1",
+    "@types/mocha": "^5.2.7",
+    "@types/node": "^10.17.24",
+    "@types/uuid": "^8.0.0",
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-oclif": "^3.1.0",
+    "eslint-config-oclif-typescript": "^0.1.0",
+    "globby": "^10.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^14.1.1",
+    "ts-node": "^8.10.1",
+    "typescript": "^3.9.3"
+  },
+  "engines": {
+    "node": ">=8.5.0"
+  },
+  "files": [
+    "/bin",
+    "/lib",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json"
+  ],
+  "homepage": "https://github.com/IgniteWolf/ignite",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "lib/index.js",
+  "oclif": {
+    "commands": "./lib/commands",
+    "bin": "ignite",
+    "plugins": [
+      "@oclif/plugin-help"
+    ]
+  },
+  "repository": "IgniteWolf/ignite",
+  "scripts": {
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint . --ext .ts --config .eslintrc",
+    "prepack": "rm -rf lib && tsc -b && oclif-dev manifest && oclif-dev readme",
+    "test": "nyc --extension .ts mocha --forbid-only \"test/**/*.test.ts\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "types": "lib/index.d.ts"
+}

@@ -1,0 +1,14 @@
+ignite:
+  name: 'Default Ignite Box'
+  box: 'centos/7'
+
+sites:
+  - path: './'
+    url: 'example.local'
+
+requires:
+  - php74
+  - apache
+  - nodejs
+  - nodejs
+  - git
