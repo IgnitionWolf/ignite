@@ -12,12 +12,15 @@ export default abstract class Basefile {
 
   settings: object
 
-  environment?: Environment
+  environment!: Environment
 
   constructor(directory: string, environment?: Environment) {
     this.directory = directory
     this.settings = {}
-    this.environment = environment
+
+    if (environment) {
+      this.environment = environment
+    }
 
     if (!fs.existsSync(this.directory)) {
       throw new CLIError(`${this.directory} does not exist.`)
