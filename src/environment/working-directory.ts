@@ -52,4 +52,15 @@ export default class WorkingDirectory {
     execSync(`cp -r ${WorkingDirectory.template} ${target}`)
     this.directory = target
   }
+
+  /**
+   * Destroy the Working Directory.
+   */
+  destroy() {
+    if (!this.directory) {
+      return
+    }
+
+    fs.unlinkSync(this.directory)
+  }
 }

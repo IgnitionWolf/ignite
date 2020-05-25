@@ -27,6 +27,10 @@ export default class Environment {
       this.load()
     }
 
+    destroy(): void {
+      this.metafile.destroy()
+    }
+
     /**
      * Initialize the environment.
      * @param {string=} name environment name (optional)

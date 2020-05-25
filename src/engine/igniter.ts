@@ -24,4 +24,9 @@ export default class Igniter {
 
     this.provider.up()
   }
+
+  destroy(): void {
+    this.provider.destroy()
+    this.environment.destroy()
+  }
 }
