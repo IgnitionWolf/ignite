@@ -33,15 +33,15 @@ export default class Environment {
 
     /**
      * Initialize the environment.
-     * @param {string=} name environment name (optional)
      */
-    create(name?: string) {
+    create() {
       if (this.isSetup()) {
         throw new CLIError("This environment is already created. Type 'ignite destroy' to destroy it.")
       }
 
-      const defaultName = (require('random-words'))({exactly: 3, join: '-'})
-      this.name = name ?? defaultName
+      if (!this.name) {
+        this.name = (require('random-words'))({exactly: 3, join: '-'})
+      }
       this.id = uuidv4()
     }
 

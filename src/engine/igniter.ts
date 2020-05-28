@@ -10,11 +10,12 @@ export default class Igniter {
 
   constructor(environment: Environment) {
     this.environment = environment
-    this.provider = new VagrantProvider(this.environment.workingDirectory)
+    this.provider = new VagrantProvider(this.environment)
   }
 
   ignite(): void {
-    if (!this.environment.isSetup()) {
+    const setup = this.environment.isSetup()
+    if (!setup) {
       this.environment.create()
     }
 
@@ -23,6 +24,10 @@ export default class Igniter {
     }
 
     this.provider.up()
+
+    if (!setup) {
+      this.provider.bootstrapper.bootstrap()
+    }
   }
 
   destroy(): void {

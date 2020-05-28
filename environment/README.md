@@ -2,6 +2,8 @@
 
 This template runs with Vagrant, provisioned with Ansible. This template is meant to be used with the Ignite utility tool, and can't be directly started with Vagrant. This will be cloned by Ignite and placed in a special directory, therefore you will find a lot of "variable placeholders" that will be replaced with the correct values when the environment is ignited up.
 
+The project is written in such way to support multiple providers; Vagrant for now, not sure what other tool is around, and provisioners; Ansible for now, there are more possible candidates like Chef or Puppet.
+
 ## Getting Started
 
 ### Prerequisites
@@ -11,12 +13,12 @@ You must have Ansible and [Molecule](https://github.com/ansible-community/molecu
 In order to use Molecule you will need a Python virtual environment; I highly recommend [pipenv](https://github.com/pypa/pipenv), after you install it just follow these steps:
 
 ```
-$ cd "this-location"
+$ cd "repository-folder/environment/ansible"
 $ pipenv install
 $ pipenv shell
 ```
 
-From now on you will need to execute `pipenv shell` in the directory whenever you want to use Molecule. After you've got this running, it will be necessary to install a few Ansible roles using [Ansible Galaxy](https://galaxy.ansible.com/).
+From now on you will need to execute `pipenv shell` in the `environment/ansible` directory whenever you want to use Molecule. After you've got this running, it will be necessary to install a few Ansible roles using [Ansible Galaxy](https://galaxy.ansible.com/).
 
 ```
 $ ansible-galaxy install -r requirements.yml
@@ -39,7 +41,7 @@ Any new roles or modifications must work flawlessly in different Linux distribut
 
 ## Authors
 
-* [Ignition Wolf](https://github.com/PurpleBooth)
+* [Ignition Wolf](https://github.com/IgnitionWolf)
 
 ## License
 

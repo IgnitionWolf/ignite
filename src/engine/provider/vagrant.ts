@@ -1,4 +1,3 @@
-import WorkingDirectory from '../../environment/working-directory'
 import {Provider, ProviderStatus} from './provider'
 import {Client, ClientChannel} from 'ssh2'
 import {execSync} from 'child_process'
@@ -7,12 +6,19 @@ import * as fs from 'fs'
 
 // @ts-ignore
 import * as SSHConfig from 'ssh-config'
+import Bootstrapper from '../../bootstrapper/bootstrapper'
+import VagrantBootstrap from '../../bootstrapper/vagrant'
+import Environment from '../../environment/environment'
+import AnsibleProvisioner from '../../bootstrapper/provisioner/ansible'
 
 export default class VagrantProvider implements Provider {
-  workingDirectory: WorkingDirectory
+  environment: Environment
 
-  constructor(workingDirectory: WorkingDirectory) {
-    this.workingDirectory = workingDirectory
+  bootstrapper: Bootstrapper
+
+  constructor(environment: Environment) {
+    this.environment = environment
+    this.bootstrapper = new VagrantBootstrap(environment, new AnsibleProvisioner())
   }
 
   /**
@@ -31,14 +37,14 @@ export default class VagrantProvider implements Provider {
   }
 
   /**
-   * Suspend the Vagrant environment by shutting down the box safely.
+   * Suspend the Vagrant environment by suspending the box safely.
    */
   suspend(): void {
     this.exec('vagrant suspend')
   }
 
   /**
-   * Destroy the Vagrant environment by shutting down the box safely.
+   * Destroy the Vagrant environment.
    */
   destroy(): void {
     this.exec('vagrant destroy --force')
@@ -138,7 +144,7 @@ export default class VagrantProvider implements Provider {
    * @return {string} output buffer in string
    */
   exec(command: string): string {
-    const directory = '/home/mauricio/projects/vagrant' // this.workingDirectory.directory
+    const directory = this.environment.workingDirectory.directory
     return execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
   }
 }

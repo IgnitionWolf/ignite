@@ -1,10 +1,14 @@
 import Environment from '../environment/environment'
+import Provisioner from './provisioner/provisioner'
 
 export default abstract class Bootstrapper {
   environment: Environment
 
-  constructor(environment: Environment) {
+  provisioner: Provisioner
+
+  constructor(environment: Environment, provisioner: Provisioner) {
     this.environment = environment
+    this.provisioner = provisioner
   }
 
   abstract bootstrap(): void;

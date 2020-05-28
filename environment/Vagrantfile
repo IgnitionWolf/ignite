@@ -1,0 +1,23 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+    config.vm.hostname       = "{{hostname}}"
+    config.vm.box            = "{{box}}"
+    config.ssh.forward_agent = true
+    config.berkshelf.enabled = true
+    config.vm.network :private_network, ip: "{{ip}}"
+
+    config.vm.provider :virtualbox do |vb|
+        vb.customize ["modifyvm", :id, "--memory", "3072"]
+        vb.name = "{{hostname}}"
+    end
+
+    config.vm.provider :vmware_workstation do |v, override|
+        v.vmx["memsize"]  = "3072"
+        v.vmx["numvcpus"] = "4"
+        v.gui = true
+    end
+end

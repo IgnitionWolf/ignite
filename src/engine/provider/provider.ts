@@ -1,4 +1,7 @@
+import Bootstrapper from '../../bootstrapper/bootstrapper';
+
 export interface Provider {
+    bootstrapper: Bootstrapper;
     up(): void;
     down(): void;
     status(): string;

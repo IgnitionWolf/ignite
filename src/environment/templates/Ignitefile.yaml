@@ -1,14 +1,20 @@
 ignite:
   name: 'Default Ignite Box'
   box: 'centos/7'
+  ip: 192.168.10.33
 
 sites:
   - path: './'
     url: 'example.local'
 
 requires:
-  - php74
-  - apache
-  - nodejs
-  - nodejs
-  - git
+  - name: php
+    version: 7.4
+    extensions:
+      - mbstring
+      - curl
+      - gd
+
+  - name: apache
+  - name: nodejs
+  - name: git

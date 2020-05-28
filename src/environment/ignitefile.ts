@@ -3,6 +3,12 @@ import * as fs from 'fs'
 import {CLIError} from '@oclif/errors'
 import * as path from 'path'
 
+export interface IgnitefilePackage {
+  name: string;
+  version?: string;
+  extensions?: string;
+}
+
 export default class Ignitefile extends Basefile {
   filename = 'Ignitefile.yaml'
 
