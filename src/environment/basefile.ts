@@ -42,14 +42,14 @@ export default abstract class Basefile {
    * @param {boolean} createIfMissing Create the file if not existent
    */
   load(createIfMissing?: boolean): void {
-    const target = this.getPath()
     createIfMissing = createIfMissing || false
-    if (createIfMissing) {
-      this.save()
-    } else {
-      const className = this.constructor.name
-      if (!fs.existsSync(target)) {
-        throw new CLIError(`The ${className} does not exist.`)
+
+    const target = this.getPath()
+    if (!fs.existsSync(target)) {
+      if (createIfMissing) {
+        this.save()
+      } else {
+        throw new CLIError(`The ${this.constructor.name} does not exist.`)
       }
     }
 
@@ -61,11 +61,10 @@ export default abstract class Basefile {
    * Save the configuration file, it's created if not existent.
    */
   save(): void {
-    const content = YAML.stringify(this.settings)
     const target = this.getPath()
 
     fs.ensureFileSync(target)
-    fs.writeFileSync(target, content)
+    fs.writeFileSync(target, YAML.stringify(this.settings))
   }
 
   /**
@@ -96,25 +95,7 @@ export default abstract class Basefile {
     return _.get(this.settings, key, fallback)
   }
 
-  /**
-   * Ensure file is accessible and existent.
-   * @throws {CLIError}
-   * @param {string} file path to file
-   */
-  validateFile(file: string) {
-    // Check if the file exists in the current directory, and if it is writable.
-    fs.access(file, fs.constants.F_OK | fs.constants.W_OK, err => {
-      if (err) {
-        throw new CLIError(
-          `${file} ${err.code === 'ENOENT' ? 'does not exist' : 'is read-only'}`)
-      }
-    })
-
-    // Check if the file is readable.
-    fs.access(file, fs.constants.R_OK, err => {
-      if (err) {
-        throw new CLIError(`${file} is not readable`)
-      }
-    })
+  exists(): boolean {
+    return fs.existsSync(this.filename)
   }
 }

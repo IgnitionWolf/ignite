@@ -15,6 +15,7 @@ export default class DownCommand extends Command {
     const baseDir = flags.path || process.cwd()
 
     const igniter = new Igniter(new Environment(baseDir))
+    igniter.ensureStatus()
     igniter.provider.down()
   }
 }

@@ -6,7 +6,8 @@ import * as path from 'path'
 
 export default class AnsibleProvisioner extends Provisioner {
   registerPackage(pkg: Package): void {
-    const requirementsFile = 'requirements.yml'
+    const baseDir = path.join(this.provider.environment.workingDirectory.directory, 'ansible')
+    const requirementsFile = path.join(baseDir, 'requirements.yml')
     fs.ensureFileSync(requirementsFile)
 
     const requirements = YAML.parse(fs.readFileSync(requirementsFile).toString('UTF-8')) || []

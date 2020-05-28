@@ -7,7 +7,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     config.vm.hostname       = "{{hostname}}"
     config.vm.box            = "{{box}}"
     config.ssh.forward_agent = true
-    config.berkshelf.enabled = true
     config.vm.network :private_network, ip: "{{ip}}"
 
     config.vm.provider :virtualbox do |vb|

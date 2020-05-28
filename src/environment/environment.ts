@@ -13,6 +13,8 @@ export default class Environment {
 
     ignitefile: Ignitefile
 
+    hadToSetup = false
+
     constructor(directory: string) {
       this.directory = directory
 
@@ -29,6 +31,7 @@ export default class Environment {
 
     destroy(): void {
       this.metafile.destroy()
+      this.workingDirectory.destroy()
     }
 
     /**
@@ -36,13 +39,19 @@ export default class Environment {
      */
     create() {
       if (this.isSetup()) {
-        throw new CLIError("This environment is already created. Type 'ignite destroy' to destroy it.")
+        return
       }
 
       if (!this.name) {
-        this.name = (require('random-words'))({exactly: 3, join: '-'})
+        this.name = this.ignitefile.get('ignite.name') || (require('random-words'))({exactly: 3, join: '-'})
       }
+
       this.id = uuidv4()
+      this.workingDirectory.create()
+      this.metafile.set('path', this.workingDirectory.directory)
+      this.metafile.save()
+
+      this.hadToSetup = true
     }
 
     /**
@@ -51,11 +60,6 @@ export default class Environment {
     load(): void {
       if (this.isSetup()) {
         this.workingDirectory.load(this.metafile.get('path'))
-      } else {
-        this.create()
-        this.workingDirectory.create()
-        this.metafile.set('path', this.workingDirectory.directory)
-        this.metafile.save()
       }
     }
 

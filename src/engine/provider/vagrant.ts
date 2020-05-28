@@ -18,7 +18,7 @@ export default class VagrantProvider implements Provider {
 
   constructor(environment: Environment) {
     this.environment = environment
-    this.bootstrapper = new VagrantBootstrap(environment, new AnsibleProvisioner())
+    this.bootstrapper = new VagrantBootstrap(environment, new AnsibleProvisioner(this))
   }
 
   /**

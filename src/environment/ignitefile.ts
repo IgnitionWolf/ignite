@@ -1,5 +1,5 @@
 import Basefile from './basefile'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 import {CLIError} from '@oclif/errors'
 import * as path from 'path'
 
@@ -23,6 +23,6 @@ export default class Ignitefile extends Basefile {
   }
 
   destroy() {
-    fs.unlinkSync(this.getPath())
+    fs.removeSync(this.getPath())
   }
 }

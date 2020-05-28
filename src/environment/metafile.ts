@@ -27,6 +27,6 @@ export default class Metafile extends Basefile {
   }
 
   destroy() {
-    fs.unlinkSync(this.getPath())
+    fs.removeSync(path.join(this.directory, '.ignite'))
   }
 }

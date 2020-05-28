@@ -15,6 +15,7 @@ export default class StatusCommand extends Command {
     const baseDir = flags.path || process.cwd()
 
     const igniter = new Igniter(new Environment(baseDir))
+    igniter.ensureStatus()
     this.log(`Current machine status: ${igniter.provider.status()}`)
   }
 }

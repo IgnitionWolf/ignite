@@ -14,24 +14,31 @@ export default class Igniter {
   }
 
   ignite(): void {
-    const setup = this.environment.isSetup()
-    if (!setup) {
-      this.environment.create()
-    }
-
-    if (this.provider.status() === ProviderStatus.Running) {
+    if (this.environment.isSetup() && this.provider.status() === ProviderStatus.Running) {
       throw new CLIError('The environment is already running.')
     }
 
-    this.provider.up()
+    this.environment.create()
 
-    if (!setup) {
+    if (this.environment.hadToSetup) {
       this.provider.bootstrapper.bootstrap()
     }
+
+    this.provider.up()
   }
 
   destroy(): void {
+    if (!this.environment.isSetup()) {
+      throw new CLIError("The machine hasn't been ignited, type 'ignite up' to get it running.")
+    }
+
     this.provider.destroy()
     this.environment.destroy()
+  }
+
+  ensureStatus(): void {
+    if (!this.environment.isSetup() || (this.environment.isSetup() && this.provider.status() === ProviderStatus.Offline)) {
+      throw new CLIError("The machine hasn't been ignited, type 'ignite up' to get it running.")
+    }
   }
 }

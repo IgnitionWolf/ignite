@@ -3,12 +3,12 @@ import {execSync} from 'child_process'
 import {CLIError} from '@oclif/errors'
 import * as path from 'path'
 import * as os from 'os'
-import * as fs from 'fs'
+import * as fs from 'fs-extra'
 
 export default class WorkingDirectory {
   static template = path.join(path.parse(process.mainModule.filename).dir, '..', 'environment')
 
-  static directoriesPath = path.join(os.homedir(), '.ignite')
+  static directoriesPath = path.join(os.homedir(), 'ignite')
 
   directory!: string
 
@@ -45,6 +45,8 @@ export default class WorkingDirectory {
       this.environment.id
     )
 
+    fs.ensureDirSync(WorkingDirectory.directoriesPath)
+
     if (fs.existsSync(target)) {
       throw new CLIError('The working directory already exists.')
     }
@@ -61,6 +63,6 @@ export default class WorkingDirectory {
       return
     }
 
-    fs.unlinkSync(this.directory)
+    fs.removeSync(this.directory)
   }
 }

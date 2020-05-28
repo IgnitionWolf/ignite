@@ -1,7 +1,10 @@
 import Bootstrapper from '../../bootstrapper/bootstrapper';
+import Environment from '../../environment/environment';
 
 export interface Provider {
     bootstrapper: Bootstrapper;
+    environment: Environment;
+
     up(): void;
     down(): void;
     status(): string;
