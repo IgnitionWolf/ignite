@@ -11,8 +11,6 @@ requires:
   - name: php
     version: 7.4
     extensions:
-      - mbstring
-      - curl
       - gd
 
   - name: apache

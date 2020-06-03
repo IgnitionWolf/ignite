@@ -20,6 +20,9 @@ export default class Igniter {
 
     this.environment.create()
 
+    // We need to re-create this to prevent some data assigning issues
+    this.provider = new VagrantProvider(this.environment)
+
     if (this.environment.hadToSetup) {
       this.provider.bootstrapper.bootstrap()
     }

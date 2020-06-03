@@ -6,13 +6,14 @@ export interface Provider {
     environment: Environment;
 
     up(): void;
-    down(): void;
-    status(): string;
-    suspend(): void;
     ssh(): void;
-    sshConfig(ssh2: boolean): object;
+    down(): void;
+    suspend(): void;
     destroy(): void;
+    status(): string;
     isInstalled(): boolean;
+    sshConfig(ssh2: boolean): object;
+    installPlugin(plugins: Array<string>): void;
 }
 
 export enum ProviderStatus {

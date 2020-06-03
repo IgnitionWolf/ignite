@@ -139,12 +139,22 @@ export default class VagrantProvider implements Provider {
   }
 
   /**
+   * Install a set of Vagrant plugins.
+   * @param {string} plugins -
+   */
+  installPlugin(plugins: Array<string>): void {
+    this.exec(`vagrant plugin install ${plugins.join(' ')}`)
+  }
+
+  /**
    * Execute a CLI command, in a specific directory.
    * @param {string} command operation to execute
    * @return {string} output buffer in string
    */
   exec(command: string): string {
     const directory = this.environment.workingDirectory.directory
-    return execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
+    const result = execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
+    console.log(result)
+    return result
   }
 }

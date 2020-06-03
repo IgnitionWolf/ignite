@@ -2,15 +2,17 @@ import Basefile from './basefile'
 import * as fs from 'fs-extra'
 import {CLIError} from '@oclif/errors'
 import * as path from 'path'
+import Package from '../bootstrapper/packages/package'
 
 export interface IgnitefilePackage {
   name: string;
   version?: string;
   extensions?: string;
+  requires?: Array<Package>;
 }
 
 export default class Ignitefile extends Basefile {
-  filename = 'Ignitefile.yaml'
+  filename = 'Ignitefile.yml'
 
   create() {
     const target = this.getPath()
@@ -18,7 +20,7 @@ export default class Ignitefile extends Basefile {
       throw new CLIError('The Ignitefile already exists.')
     }
 
-    fs.copyFileSync(path.join(__dirname, 'templates', 'Ignitefile.yaml'), target)
+    fs.copyFileSync(path.join(__dirname, 'templates', this.filename), target)
     this.load() // Load the template content after copying it..
   }
 

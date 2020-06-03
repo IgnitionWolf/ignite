@@ -8,7 +8,7 @@ import * as path from 'path'
  * as the metafile must contain the path to that directory, which is the main objective.
  */
 export default class Metafile extends Basefile {
-  filename = path.join('.ignite', 'config.yaml')
+  filename = path.join('.ignite', 'config.yml')
 
   settings = {id: null, name: null, path: null}
 

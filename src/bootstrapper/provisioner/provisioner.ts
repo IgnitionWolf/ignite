@@ -1,14 +1,16 @@
 import PackagesFactory from '../packages/factory'
 import {CLIError} from '@oclif/errors'
 import Package from '../packages/package'
-import { Provider } from '../../engine/provider/provider'
+import {Provider} from '../../engine/provider/provider'
 
 export default abstract class Provisioner {
-
   provider: Provider
+
+  directory: string
 
   constructor(provider: Provider) {
     this.provider = provider
+    this.directory = provider.environment.workingDirectory.directory
   }
 
   /**
