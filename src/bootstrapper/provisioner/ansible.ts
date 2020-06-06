@@ -3,13 +3,14 @@ import * as fs from 'fs-extra'
 import * as YAML from 'yaml'
 import Package from '../packages/package'
 import * as path from 'path'
+import * as _ from 'lodash'
 
 import {CLIError} from '@oclif/errors'
 
 interface PlaybookInterface {
   hosts: string;
   roles: Array<string | object>;
-  vars_files: Array<string>;
+  vars: object;
 }
 
 export default class AnsibleProvisioner extends Provisioner {
@@ -48,8 +49,10 @@ export default class AnsibleProvisioner extends Provisioner {
         const conditional = pkg.conditional()
         element.roles = element.roles ?? []
         if (conditional) {
-          element.roles.push({role: pkg.install, vars: pkg.configuration, when: conditional})
-        } else element.roles.push({role: pkg.install, vars: pkg.configuration})
+          element.roles.push({role: pkg.install, when: conditional})
+        } else element.roles.push({role: pkg.install})
+
+        element.vars = _.merge(pkg.configuration, element.vars ?? {})
 
         // if (pkg.configFilename) {
         //   element.vars_files = element.vars_files ?? []
