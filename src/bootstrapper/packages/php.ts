@@ -8,15 +8,15 @@ export default class PhpPackage extends Package {
   requires: Array<string> = ['remi-repo', 'php-versions']
 
   extensions: Array<string> = [
-  //  'php-json',
-  //  'php-curl',
-  //  'php-mysql',
-  //  'php-zip',
-  //  'php-openssl',
-  //  'php-bcmath',
+    'php-json',
+    'php-curl',
+    'php-mysql',
+    'php-zip',
+    'php-openssl',
+    'php-bcmath',
   ]
 
-  version = '"7.4"'
+  version = '7.4'
 
   get configuration(): object {
     return {
