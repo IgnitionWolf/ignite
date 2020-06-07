@@ -10,8 +10,8 @@ export interface Provider {
     down(): void;
     suspend(): void;
     destroy(): void;
-    status(): string;
-    isInstalled(): boolean;
+    status(): void;
+    isInstalled(): void;
     sshConfig(ssh2: boolean): object;
     installPlugin(plugins: Array<string>): void;
 }

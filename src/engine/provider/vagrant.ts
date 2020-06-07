@@ -1,6 +1,6 @@
 import {Provider, ProviderStatus} from './provider'
 import {Client, ClientChannel} from 'ssh2'
-import {execSync} from 'child_process'
+import {execSync, spawnSync, spawn, exec} from 'child_process'
 import {CLIError} from '@oclif/errors'
 import * as fs from 'fs'
 
@@ -25,37 +25,37 @@ export default class VagrantProvider implements Provider {
    * Start the Vagrant environment, it's provisioned on the first start,
    * if it's already provisioned it will boot the box.
    */
-  up(): void {
-    this.exec('vagrant up')
+  async up() {
+    await this.exec('vagrant up')
   }
 
   /**
    * Stop the Vagrant environment by shutting down the box safely.
    */
-  down(): void {
-    this.exec('vagrant halt')
+  async down() {
+    await this.exec('vagrant halt')
   }
 
   /**
    * Suspend the Vagrant environment by suspending the box safely.
    */
-  suspend(): void {
-    this.exec('vagrant suspend')
+  async suspend() {
+    await this.exec('vagrant suspend')
   }
 
   /**
    * Destroy the Vagrant environment.
    */
-  destroy(): void {
-    this.exec('vagrant destroy --force')
+  async destroy() {
+    await this.exec('vagrant destroy --force')
   }
 
   /**
    * Get the Vagrant environment status.
    * @return {string} status
    */
-  status(): string {
-    const buffer = this.exec('vagrant status')
+  async status() {
+    const buffer = await this.exec('vagrant status')
 
     if (buffer.indexOf('running') !== -1) {
       return ProviderStatus.Running
@@ -73,8 +73,8 @@ export default class VagrantProvider implements Provider {
    * Check if Vagrant is installed or not.
    * @return {boolean} -
    */
-  isInstalled(): boolean {
-    const buffer = this.exec('vagrant')
+  async isInstalled() {
+    const buffer = await this.exec('vagrant')
     return (buffer.indexOf('--help') !== -1)
   }
 
@@ -82,7 +82,7 @@ export default class VagrantProvider implements Provider {
    * SSH into the environment box, we will not be able to use 'vagrant ssh' here.
    * This connects the SSH pipes to provide an interactive functionality.
    */
-  ssh(): void {
+  ssh() {
     const connection = this.sshConfig(true)
 
     const conn = new Client()
@@ -142,7 +142,7 @@ export default class VagrantProvider implements Provider {
    * Install a set of Vagrant plugins.
    * @param {string} plugins -
    */
-  installPlugin(plugins: Array<string>): void {
+  installPlugin(plugins: Array<string>) {
     this.exec(`vagrant plugin install ${plugins.join(' ')}`)
   }
 
@@ -151,10 +151,27 @@ export default class VagrantProvider implements Provider {
    * @param {string} command operation to execute
    * @return {string} output buffer in string
    */
-  exec(command: string): string {
+  async exec(command: string) {
     const directory = this.environment.workingDirectory.directory
-    const result = execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
-    console.log(result)
-    return result
+    // const result = execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
+    // console.log(result)
+
+    console.log(`> ${command}`)
+    const args = command.split(' ') || []
+    command = args.shift() || ''
+
+    const result = spawn(command, args, {cwd: directory})
+    let final = ''
+
+    result.stdout.on('data', data => {
+      console.log(data.toString())
+      final = data
+    })
+
+    result.stderr.on('data', data => {
+      console.error(data.toString())
+    })
+
+    return final.toString()
   }
 }

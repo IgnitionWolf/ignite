@@ -15,7 +15,7 @@ export default class Package {
    * List of extensions to install (optional)
    * @var {array}
    */
-  extensions: Array<string> = []
+  extensions: Array<string | object> = []
 
   /**
    * Package version (optional)

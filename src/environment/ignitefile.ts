@@ -11,6 +11,13 @@ export interface IgnitefilePackage {
   requires?: Array<Package>;
 }
 
+export interface IgnitefileSite {
+  dest: string;
+  host: string;
+  git?: string;
+  path?: string;
+}
+
 export default class Ignitefile extends Basefile {
   filename = 'Ignitefile.yml'
 

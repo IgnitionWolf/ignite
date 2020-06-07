@@ -6,12 +6,7 @@ import * as path from 'path'
 import * as _ from 'lodash'
 
 import {CLIError} from '@oclif/errors'
-
-interface PlaybookInterface {
-  hosts: string;
-  roles: Array<string | object>;
-  vars: object;
-}
+import { PlaybookInterface } from '../bootstrapper'
 
 export default class AnsibleProvisioner extends Provisioner {
   registerPackage(pkg: Package): void {
@@ -45,7 +40,7 @@ export default class AnsibleProvisioner extends Provisioner {
     const playbook = YAML.parse(fs.readFileSync(playbookFile).toString('UTF-8')) || {}
 
     playbook.forEach((element: PlaybookInterface) => {
-      if (element.hosts === 'webservers') {
+      if (element.hosts === 'server') {
         const conditional = pkg.conditional()
         element.roles = element.roles ?? []
         if (conditional) {

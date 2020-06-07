@@ -1,3 +1,4 @@
-- hosts: webservers
+- hosts: server
   vars:
+  pre_tasks:
   roles:

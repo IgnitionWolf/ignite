@@ -1,6 +1,13 @@
 import Environment from '../environment/environment'
 import Provisioner from './provisioner/provisioner'
 
+export interface PlaybookInterface {
+  hosts: string;
+  roles: Array<string | object>;
+  vars: object;
+  pre_tasks: Array<object>;
+  post_tasks: Array<object>;
+}
 export default abstract class Bootstrapper {
   environment: Environment
 

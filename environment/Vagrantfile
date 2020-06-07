@@ -20,6 +20,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         v.gui = true
     end
 
+    {{sync_folders}}
+
     provisioner = :ansible_local
 
     config.vm.provision provisioner do |ansible|
