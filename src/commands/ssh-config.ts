@@ -15,7 +15,7 @@ export default class SSHConfigCommand extends Command {
     const baseDir = flags.path || process.cwd()
 
     const igniter = new Igniter(new Environment(baseDir))
-    igniter.ensureStatus()
-    this.log(igniter.provider.sshConfig())
+    await igniter.ensureStatus()
+    this.log(await igniter.provider.sshConfig() as string)
   }
 }

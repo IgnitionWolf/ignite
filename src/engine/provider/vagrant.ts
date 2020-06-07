@@ -10,6 +10,7 @@ import Bootstrapper from '../../bootstrapper/bootstrapper'
 import VagrantBootstrap from '../../bootstrapper/vagrant'
 import Environment from '../../environment/environment'
 import AnsibleProvisioner from '../../bootstrapper/provisioner/ansible'
+import { rejects } from 'assert'
 
 export default class VagrantProvider implements Provider {
   environment: Environment
@@ -54,7 +55,7 @@ export default class VagrantProvider implements Provider {
    * Get the Vagrant environment status.
    * @return {string} status
    */
-  async status() {
+  async status(): Promise<string> {
     const buffer = await this.exec('vagrant status')
 
     if (buffer.indexOf('running') !== -1) {
@@ -73,7 +74,7 @@ export default class VagrantProvider implements Provider {
    * Check if Vagrant is installed or not.
    * @return {boolean} -
    */
-  async isInstalled() {
+  async isInstalled(): Promise<boolean> {
     const buffer = await this.exec('vagrant')
     return (buffer.indexOf('--help') !== -1)
   }
@@ -82,8 +83,8 @@ export default class VagrantProvider implements Provider {
    * SSH into the environment box, we will not be able to use 'vagrant ssh' here.
    * This connects the SSH pipes to provide an interactive functionality.
    */
-  ssh() {
-    const connection = this.sshConfig(true)
+  async ssh() {
+    const connection = await this.sshConfig(true)
 
     const conn = new Client()
     conn.on('ready', () => {
@@ -101,17 +102,17 @@ export default class VagrantProvider implements Provider {
           conn.end()
         })
       })
-    }).connect(connection)
+    }).connect(connection as object)
   }
 
   /**
    * Get the environment's SSH configuration.
    * @throws {CLIError}
    * @param {boolean=} ssh2 output in the ssh2 package format
-   * @return {any} ssh config (object/string)
+   * @return {object | string} ssh config
    */
-  sshConfig(ssh2?: boolean): any {
-    const config = this.exec('vagrant ssh-config')
+  async sshConfig(ssh2?: boolean): Promise<object | string> {
+    const config = await this.exec('vagrant ssh-config')
 
     if (!config) {
       throw new CLIError('Failed to obtain the SSH configuration from the provider.')
@@ -120,7 +121,7 @@ export default class VagrantProvider implements Provider {
     ssh2 = ssh2 || false
     if (ssh2) {
       const result = {host: '', port: 22, username: '', privateKey: ''}
-      const section = SSHConfig.parse(config)[0]
+      const section = SSHConfig.parse(config.toString())[0]
       for (const line of section.config) {
         if (line.param === 'HostName') {
           result.host = line.value
@@ -151,27 +152,28 @@ export default class VagrantProvider implements Provider {
    * @param {string} command operation to execute
    * @return {string} output buffer in string
    */
-  async exec(command: string) {
-    const directory = this.environment.workingDirectory.directory
-    // const result = execSync(`(cd ${directory} && ${command})`).toString('UTF-8')
-    // console.log(result)
+  async exec(command: string): Promise<string> {
+    return new Promise((resolve: any, reject: any) => {
+      const directory = this.environment.workingDirectory.directory
 
-    console.log(`> ${command}`)
-    const args = command.split(' ') || []
-    command = args.shift() || ''
+      const args = command.split(' ') || []
+      const process = spawn(args.shift() || '', args, {cwd: directory})
+      let result: string
 
-    const result = spawn(command, args, {cwd: directory})
-    let final = ''
+      console.log(`> ${command}`)
+      process.stdout.on('data', data => {
+        console.log(data.toString())
+        result = data
+      })
 
-    result.stdout.on('data', data => {
-      console.log(data.toString())
-      final = data
+      process.stderr.on('data', data => {
+        console.error(data.toString())
+        return reject(data.toString())
+      })
+
+      process.on('close', () => {
+        return resolve(result)
+      })
     })
-
-    result.stderr.on('data', data => {
-      console.error(data.toString())
-    })
-
-    return final.toString()
   }
 }

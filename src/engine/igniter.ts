@@ -13,8 +13,8 @@ export default class Igniter {
     this.provider = new VagrantProvider(this.environment)
   }
 
-  ignite(): void {
-    if (this.environment.isSetup() && this.provider.status() === ProviderStatus.Running) {
+  async ignite() {
+    if (this.environment.isSetup() && await this.provider.status() === ProviderStatus.Running) {
       throw new CLIError('The environment is already running.')
     }
 
@@ -27,20 +27,20 @@ export default class Igniter {
       this.provider.bootstrapper.bootstrap()
     }
 
-    this.provider.up()
+    await this.provider.up()
   }
 
-  destroy(): void {
+  async destroy() {
     if (!this.environment.isSetup()) {
       throw new CLIError("The machine hasn't been ignited, type 'ignite up' to get it running.")
     }
 
-    this.provider.destroy()
-    this.environment.destroy()
+    await this.provider.destroy() // llama destroy()
+    await this.environment.destroy() // destruye el directorio donde se corre destroy()
   }
 
-  ensureStatus(): void {
-    if (!this.environment.isSetup() || (this.environment.isSetup() && this.provider.status() === ProviderStatus.Offline)) {
+  async ensureStatus() {
+    if (!this.environment.isSetup() || (this.environment.isSetup() && await this.provider.status() === ProviderStatus.Offline)) {
       throw new CLIError("The machine hasn't been ignited, type 'ignite up' to get it running.")
     }
   }

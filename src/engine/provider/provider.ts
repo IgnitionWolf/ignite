@@ -12,7 +12,7 @@ export interface Provider {
     destroy(): void;
     status(): void;
     isInstalled(): void;
-    sshConfig(ssh2: boolean): object;
+    sshConfig(ssh2: boolean): string | object;
     installPlugin(plugins: Array<string>): void;
 }
 

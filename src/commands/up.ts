@@ -17,7 +17,7 @@ export default class UpCommand extends Command {
 
     // cli.action.start('igniting the environment')
     const igniter = new Igniter(new Environment(baseDir))
-    igniter.ignite()
+    await igniter.ignite()
     // cli.action.stop()
 
     console.log("The environment has been ignited up. Type 'ignite ssh' to interact with it.")

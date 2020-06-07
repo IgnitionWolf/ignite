@@ -163,7 +163,7 @@ export default class VagrantBootstrap extends Bootstrapper  {
 
     if (element.name === 'apache') {
       pkg.extensions = this.sites.map((site: IgnitefileSite) => {
-        return {servername: site.dest, documentroot: site.host}
+        return {servername: site.host, documentroot: site.dest}
       })
     }
 
