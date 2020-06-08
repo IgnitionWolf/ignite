@@ -4,10 +4,17 @@ import Provisioner from './provisioner/provisioner'
 export interface PlaybookInterface {
   hosts: string;
   roles: Array<string | object>;
-  vars: object;
+  vars_files: object;
   pre_tasks: Array<object>;
   post_tasks: Array<object>;
 }
+
+/**
+ * TO-DO: The whole bootstrap process must be written again.
+ * Store all the files data in memory and write them as last step.
+ * This way we can add some flexibility to the whole bootstrapping
+ * process and prevent excessive file IOs
+ */
 export default abstract class Bootstrapper {
   environment: Environment
 

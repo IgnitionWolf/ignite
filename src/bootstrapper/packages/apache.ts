@@ -9,8 +9,10 @@ export default class ApachePackage extends Package {
 
   get configuration(): object {
     return {
-      apache_listen_port: 8080,
+      apache_listen_port: 80,
       apache_vhosts: this.extensions ?? [],
+      apache_remove_default_vhost: false,
+      apache_packages_state: 'latest',
     }
   }
 }

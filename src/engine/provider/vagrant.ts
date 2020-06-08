@@ -1,6 +1,6 @@
 import {Provider, ProviderStatus} from './provider'
 import {Client, ClientChannel} from 'ssh2'
-import {execSync, spawnSync, spawn, exec} from 'child_process'
+import {spawn} from 'child_process'
 import {CLIError} from '@oclif/errors'
 import * as fs from 'fs'
 
@@ -10,7 +10,6 @@ import Bootstrapper from '../../bootstrapper/bootstrapper'
 import VagrantBootstrap from '../../bootstrapper/vagrant'
 import Environment from '../../environment/environment'
 import AnsibleProvisioner from '../../bootstrapper/provisioner/ansible'
-import { rejects } from 'assert'
 
 export default class VagrantProvider implements Provider {
   environment: Environment

@@ -39,8 +39,9 @@ export default class Igniter {
     await this.environment.destroy() // destruye el directorio donde se corre destroy()
   }
 
-  async ensureStatus() {
-    if (!this.environment.isSetup() || (this.environment.isSetup() && await this.provider.status() === ProviderStatus.Offline)) {
+  async ensureStatus(onlySetup?: boolean) {
+    onlySetup = onlySetup || false
+    if (!this.environment.isSetup() || (this.environment.isSetup() && await this.provider.status() === ProviderStatus.Offline && !onlySetup)) {
       throw new CLIError("The machine hasn't been ignited, type 'ignite up' to get it running.")
     }
   }

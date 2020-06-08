@@ -17,9 +17,14 @@ requires:
     extensions:
       - gd
 
+  - name: composer
   - name: apache
   - name: nodejs
   - name: git
+
+# commands:
+#   - cmd: 'composer install'
+#     path: '/var/www/git-example'
 
 # utilities:
 #   - htop

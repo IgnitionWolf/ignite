@@ -47,12 +47,12 @@ export default class AnsibleProvisioner extends Provisioner {
           element.roles.push({role: pkg.install, when: conditional})
         } else element.roles.push({role: pkg.install})
 
-        element.vars = _.merge(pkg.configuration, element.vars ?? {})
+        // element.vars = _.merge(pkg.configuration, element.vars ?? {})
 
-        // if (pkg.configFilename) {
-        //   element.vars_files = element.vars_files ?? []
-        //   element.vars_files.push(path.join('vars', pkg.configFilename))
-        // }
+        if (pkg.configFilename) {
+          element.vars_files = element.vars_files ?? []
+          element.vars_files.push(path.join('vars', pkg.configFilename))
+        }
       }
     })
 

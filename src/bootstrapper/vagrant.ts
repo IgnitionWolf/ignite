@@ -5,6 +5,7 @@ import {CLIError} from '@oclif/errors'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as YAML from 'yaml'
+import * as _ from 'lodash'
 
 export default class VagrantBootstrap extends Bootstrapper  {
   sites: Array<IgnitefileSite> = []
@@ -61,7 +62,11 @@ export default class VagrantBootstrap extends Bootstrapper  {
 
   handleCommon(): void {
     const pre_tasks: Array<object> = []
-    const post_tasks: Array<object> = []
+    const post_tasks: Array<object> = [{
+      name: 'Disable SELinux in RedHat',
+      shell: 'sudo setenforce 0',
+      when: "ansible_os_family == 'RedHat'",
+    }]
 
     /**
      * Install common dependencies
@@ -115,7 +120,39 @@ export default class VagrantBootstrap extends Bootstrapper  {
       }
 
       post_tasks.push(task)
+
+      post_tasks.push({
+        shell: `sudo chown vagrant:vagrant -R ${site.dest}`,
+        become: 'yes',
+      })
     })
+
+    /**
+     * Perform specific shell commands.
+     */
+    const commands = this.environment.ignitefile.get('commands', [])
+    post_tasks.push(...commands.map((command: any) => {
+      if (command.cmd.indexOf('composer') !== -1) {
+        command.cmd = command.cmd.replace('composer', '/usr/local/bin/composer')
+        command.extra = {become: 'no'}
+      }
+
+      const result = {
+        name: `Execute command: ${command.cmd}`,
+        shell: command.cmd,
+        args: command?.args || {},
+      }
+
+      if (command?.extra) {
+        _.merge(result, command.extra)
+      }
+
+      if (command?.path) {
+        result.args = {...result.args, chdir: command?.path}
+      }
+
+      return result
+    }))
 
     /**
      * Add tasks to playbook as pre_tasks
@@ -163,7 +200,17 @@ export default class VagrantBootstrap extends Bootstrapper  {
 
     if (element.name === 'apache') {
       pkg.extensions = this.sites.map((site: IgnitefileSite) => {
-        return {servername: site.host, documentroot: site.dest}
+        const conf = {
+          documentroot: path.join(site.dest, 'public'),
+          servername: `www.${site.host}`,
+          serveralias: site.host,
+        }
+
+        if (site.host.indexOf('www.') !== -1) {
+          conf.servername = site.host
+          conf.serveralias = site.host.replace('www.', '')
+        }
+        return conf
       })
     }
 

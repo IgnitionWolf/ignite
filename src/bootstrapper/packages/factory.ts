@@ -4,12 +4,16 @@ import {CLIError} from '@oclif/errors'
 import ApachePackage from './apache'
 import PhpVersionsPackage from './php-versions'
 import RemiRepositoryPackage from './repo-remi'
+import NodeJSPackage from './nodejs'
+import ComposerPackage from './composer'
 
 const PackagesFactory = {
   php: PhpPackage,
   apache: ApachePackage,
   'php-versions': PhpVersionsPackage,
   'remi-repo': RemiRepositoryPackage,
+  nodejs: NodeJSPackage,
+  composer: ComposerPackage,
 } as {
   [key: string]: typeof Package;
 }

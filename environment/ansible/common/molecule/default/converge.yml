@@ -1,7 +1,0 @@
----
-- name: Converge
-  hosts: all
-  tasks:
-    - name: "Include bootstrap"
-      include_role:
-        name: "bootstrap"

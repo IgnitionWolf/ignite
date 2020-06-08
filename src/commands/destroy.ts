@@ -26,7 +26,7 @@ export default class SuspendCommand extends Command {
 
     if (proceed) {
       const igniter = new Igniter(new Environment(baseDir))
-      await igniter.ensureStatus()
+      await igniter.ensureStatus(true)
       await igniter.destroy()
       this.log('The environment has been successfully destroyed.')
     }

@@ -1,4 +1,5 @@
 - hosts: server
-  vars:
+  vars_files:
   pre_tasks:
   roles:
+  post_tasks:
