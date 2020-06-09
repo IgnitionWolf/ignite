@@ -1,4 +1,4 @@
-ignite:
+meta:
   name: 'Default Ignite Box'
   box: 'centos/7'
   ip: 192.168.10.33
