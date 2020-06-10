@@ -1,10 +1,12 @@
 import {CLIError} from '@oclif/errors'
 import * as path from 'path'
-import * as _ from 'lodash'
 import * as fs from 'fs-extra'
-import * as YAML from 'yaml'
 import Environment from '../environment'
 
+/**
+ * This is the base class for Ignitefile and Metafile.
+ * It includes some common structural settings.
+ */
 export default abstract class Basefile {
   abstract filename: string
 

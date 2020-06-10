@@ -18,7 +18,7 @@ interface MetafileInterface {
   /**
    * Path to the working directory.
    */
-  path: string;
+  path?: string;
 }
 
 export default class Metafile extends Basefile implements MetafileInterface {
@@ -28,7 +28,7 @@ export default class Metafile extends Basefile implements MetafileInterface {
 
   name!: string;
 
-  path!: string;
+  path?: string;
 
   create() {
     const target = this.getPath()
