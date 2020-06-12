@@ -1,6 +1,6 @@
 import {IgnitefilePackage, IgnitefileSite} from '../environment/ignitefile'
 import getPackageByName from './packages/factory'
-import Bootstrapper, { PlaybookInterface } from './bootstrapper'
+import Bootstrapper, { AnsiblePlaybookInterface } from './bootstrapper'
 import {CLIError} from '@oclif/errors'
 import * as fs from 'fs-extra'
 import * as path from 'path'
@@ -163,7 +163,7 @@ export default class VagrantBootstrap extends Bootstrapper  {
 
     const playbook = YAML.parse(fs.readFileSync(playbookFile).toString('UTF-8')) || {}
 
-    playbook.forEach((element: PlaybookInterface) => {
+    playbook.forEach((element: AnsiblePlaybookInterface) => {
       if (element.hosts === 'server') {
         element.pre_tasks = pre_tasks
         element.post_tasks = post_tasks

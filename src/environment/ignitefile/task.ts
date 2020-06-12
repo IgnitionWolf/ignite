@@ -30,6 +30,12 @@ export default interface IgnitefileTask {
   file?: string;
 
   /**
+   * Extra arguments.
+   * (optional)
+   */
+  args?: object;
+
+  /**
    * For more advanced usages, you can use Ansible task power
    * by setting this to true, and use their syntax.
    * @see https://docs.ansible.com/ansible/latest/user_guide/playbooks_intro.html

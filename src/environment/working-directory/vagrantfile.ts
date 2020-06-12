@@ -29,4 +29,14 @@ export default class Vagrantfile {
 
     // fs.writeFileSync(Vagrantfile, Bootstrapper.renderTemplate(content, settings))
   }
+
+  static renderTemplate(content: string, variables: object) {
+    if (!variables) return
+
+    for (const [key, value] of Object.entries(variables)) {
+      content = content.replace(new RegExp(`{{${key}}}`, 'g'), value)
+    }
+
+    return content
+  }
 }

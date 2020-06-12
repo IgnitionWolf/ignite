@@ -2,38 +2,40 @@ import {CLIError} from '@oclif/errors'
 import Package from './package'
 import VagrantBridge from '../engine/vagrant'
 import IgnitefileTask from '../environment/ignitefile/task'
+import WorkingDirectory from '../environment/working-directory/working-directory'
+import IgnitefileDependency from '../environment/ignitefile/dependency'
 
+/**
+ * The engine in charge of provisioning the machine.
+ */
 export default abstract class Provisioner {
   provider: VagrantBridge
+
+  workingDirectory: WorkingDirectory
 
   directory: string
 
   constructor(provider: VagrantBridge) {
     this.provider = provider
     this.directory = provider.environment.workingDirectory.directory
-  }
-
-  /**
-   * Register a package or a task.
-   * @param {Package | IgnitefileTask} element -
-   * @return {void}
-   */
-  register(element: Package | IgnitefileTask): void {
-    if (element instanceof Package) {
-      return this.registerPackage(element)
-    }
-    return this.registerTask(element)
+    this.workingDirectory = provider.environment.workingDirectory
   }
 
   /**
    * Prepare all the required steps for Ansible to load a package.
-   * @param {Package} pkg the package to install
+   * @param {Array<IgnitefileDependency>} packages the packages to install
    */
-  abstract registerPackage(pkg: Package): void;
+  abstract registerPackages(packages: Array<IgnitefileDependency>): void;
 
   /**
    * Prepare all the required steps for Ansible to perform a task.
-   * @param {IgnitefileTask} task the task to perform
+   * @param {Array<IgnitefileTask>} tasks the task to perform
    */
-  abstract registerTask(task: IgnitefileTask): void;
+  abstract registerTasks(tasks: Array<IgnitefileTask>): void;
+
+  /**
+   * Prepare all the required steps for Ansible to install an utility.
+   * @param {Array<string>} utilities the utilities to install
+   */
+  abstract registerUtilities(utilities: Array<string>): void;
 }

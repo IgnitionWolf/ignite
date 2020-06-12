@@ -3,8 +3,14 @@ import * as path from 'path'
 import * as YAML from 'yaml'
 import * as _ from 'lodash'
 import * as fs from 'fs-extra'
+import Provisioner from '../provisioner'
 
-export interface PlaybookInterface {
+export interface AnsiblePlaybookInterface {
+  /**
+   * Target host present in the file.
+   */
+  hosts?: string;
+
   /**
    * Variable files, for each role.
    */
@@ -26,8 +32,10 @@ export interface PlaybookInterface {
   post_tasks: Array<object>;
 }
 
-export class AnsiblePlaybook implements PlaybookInterface {
-  workingDirectory: WorkingDirectory;
+export class AnsiblePlaybook implements AnsiblePlaybookInterface {
+  filename: string;
+
+  provisioner: Provisioner;
 
   vars_files!: Array<string>;
 
@@ -37,18 +45,18 @@ export class AnsiblePlaybook implements PlaybookInterface {
 
   post_tasks!: Array<object>;
 
-  constructor(workingDirectory: WorkingDirectory) {
-    this.workingDirectory = workingDirectory
+  constructor(provisioner: Provisioner) {
+    this.provisioner = provisioner
+    this.filename = path.join(this.provisioner.directory, 'playbook.yml')
   }
 
   /**
    * Write the main playbook settings into the file.
    */
   save(): void {
-    const filename = path.join(this.workingDirectory.directory, 'ansible', 'playbook.yml')
-    const original = YAML.parse(fs.readFileSync(filename).toString('UTF-8'))
+    const original = YAML.parse(fs.readFileSync(this.filename).toString('UTF-8'))
 
-    fs.writeFileSync(filename, YAML.stringify(_.merge(original, {
+    fs.writeFileSync(this.filename, YAML.stringify(_.merge(original, {
       vars_files: this.vars_files,
       roles: this.roles,
       pre_tasks: this.pre_tasks,

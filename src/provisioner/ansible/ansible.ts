@@ -1,65 +1,96 @@
 import Provisioner from '../provisioner'
 import * as fs from 'fs-extra'
 import * as YAML from 'yaml'
-import Package from '../packages/package'
 import * as path from 'path'
 import * as _ from 'lodash'
-import PlaybookInterface from './ansible'
 import {CLIError} from '@oclif/errors'
 import IgnitefileTask from '../../environment/ignitefile/task'
+import {AnsiblePlaybook} from './playbook'
+import VagrantBridge from '../../engine/vagrant'
+import IgnitefileDependency from '../../environment/ignitefile/dependency'
+import Package from '../package'
+import AnsibleGalaxy from './galaxy'
 
 export default class AnsibleProvisioner extends Provisioner {
-  registerPackage(pkg: Package): void {
-    const baseDir = path.join(this.directory, 'ansible')
+  playbook: AnsiblePlaybook;
 
-    /**
-     * Update the requirements.yml file.
-     */
-    const requirementsFile = path.join(baseDir, 'requirements.yml')
-    fs.ensureFileSync(requirementsFile)
+  galaxy: AnsibleGalaxy;
 
-    const requirements = YAML.parse(fs.readFileSync(requirementsFile).toString('UTF-8')) || []
-    requirements.push(pkg.install)
-    fs.writeFileSync(requirementsFile, YAML.stringify(requirements))
-
-    /**
-     * Create a configuration/variables file.
-     */
-    if (pkg.configFilename) {
-      const configurationFile = path.join(baseDir, 'vars', pkg.configFilename)
-      fs.ensureFileSync(configurationFile)
-      fs.writeFileSync(configurationFile, YAML.stringify(pkg.configuration))
-    }
-
-    /**
-     * Update the playbook file to add the new roles.
-     */
-    const playbookFile = path.join(baseDir, 'playbook.yml')
-    fs.ensureFileSync(playbookFile)
-
-    const playbook = YAML.parse(fs.readFileSync(playbookFile).toString('UTF-8')) || {}
-
-    playbook.forEach((element: PlaybookInterface) => {
-      if (element.hosts === 'server') {
-        const conditional = pkg.conditional()
-        element.roles = element.roles ?? []
-        if (conditional) {
-          element.roles.push({role: pkg.install, when: conditional})
-        } else element.roles.push({role: pkg.install})
-
-        // element.vars = _.merge(pkg.configuration, element.vars ?? {})
-
-        if (pkg.configFilename) {
-          element.vars_files = element.vars_files ?? []
-          element.vars_files.push(path.join('vars', pkg.configFilename))
-        }
-      }
-    })
-
-    fs.writeFileSync(playbookFile, YAML.stringify(playbook))
+  constructor(provider: VagrantBridge) {
+    super(provider)
+    this.playbook = new AnsiblePlaybook(this)
+    this.galaxy = new AnsibleGalaxy(this)
   }
 
-  registerTask(task: IgnitefileTask): void {
+  registerPackages(packages: Array<IgnitefileDependency>): void {
+    packages.forEach((dependency: IgnitefileDependency) => {
+      const pkg = new Package()
 
+      // Update the requirements.yml file
+      this.galaxy.add(pkg.install)
+
+      // Create the configuration file
+      if (pkg.configFilename) {
+        const configurationFile = path.join(this.directory, 'vars', pkg.configFilename)
+        fs.ensureFileSync(configurationFile)
+        fs.writeFileSync(configurationFile, YAML.stringify(pkg.configuration))
+      }
+
+      /**
+       * Update the playbook file to add the new role.
+       */
+      const role: any = {
+        role: pkg.install,
+        when: (pkg.conditional() ? pkg.conditional() : undefined),
+      }
+
+      if (pkg.configFilename) {
+        this.playbook.vars_files.push(path.join('vars', pkg.configFilename))
+      }
+
+      this.playbook.roles.push(role)
+    })
+  }
+
+  registerTasks(tasks: Array<IgnitefileTask>): void {
+    tasks.forEach((task: IgnitefileTask) => {
+      if (task?.inline) {
+        // Apply some rules here..
+        let extra = {}
+        if (task.inline.indexOf('composer') !== -1) {
+          task.inline = task.inline.replace('composer', '/usr/local/bin/composer')
+          extra = {become: 'no'}
+        }
+
+        const ansibleTask = _.merge({
+          name: `Execute task: ${task.inline}`,
+          shell: task.inline,
+          args: {...task?.args, chdir: task.path},
+        }, extra)
+
+        this.playbook.post_tasks.push(ansibleTask)
+      } else if (task?.file) {
+        const ansibleTask = {
+          name: `Execute task: ${task.inline}`,
+          shell: task.inline,
+          args: {...task?.args, chdir: task.path},
+        }
+
+        this.playbook.post_tasks.push(ansibleTask)
+      }
+    })
+  }
+
+  registerUtilities(utilities: Array<string>): void {
+    const task = ({
+      name: 'Install miscellaneous dependencies',
+      package: {
+        name: '{{ item }}',
+        state: 'present',
+      },
+      with_list: utilities,
+    })
+
+    this.playbook.pre_tasks.push(task)
   }
 }

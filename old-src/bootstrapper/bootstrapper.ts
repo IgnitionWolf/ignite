@@ -1,7 +1,7 @@
 import Environment from '../environment/environment'
 import Provisioner from './provisioner/provisioner'
 
-export interface PlaybookInterface {
+export interface AnsiblePlaybookInterface {
   hosts: string;
   roles: Array<string | object>;
   vars_files: object;

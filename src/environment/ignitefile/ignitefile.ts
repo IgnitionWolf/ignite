@@ -13,6 +13,7 @@ interface IgnitefileInterface {
   dependencies?: Array<IgnitefileDependency>;
   sites?: Array<IgnitefileSite>;
   tasks?: Array<IgnitefileTask>;
+  utilities?: Array<string>;
 }
 
 export default class Ignitefile extends Basefile implements IgnitefileInterface {
@@ -29,6 +30,8 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
   sites: Array<IgnitefileSite> = []
 
   tasks: Array<IgnitefileTask> = []
+
+  utilities: Array<string> = []
 
   /**
    * Create the Ignitefile in the project directory.
@@ -68,6 +71,10 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
 
     if (content?.tasks) {
       this.tasks = content.tasks
+    }
+
+    if (content?.utilities) {
+      this.utilities = content.utilities
     }
   }
 

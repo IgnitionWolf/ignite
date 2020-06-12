@@ -1,5 +1,8 @@
 - hosts: server
   vars_files:
   pre_tasks:
+    - name: Disable SELinux in RedHat
+      shell: sudo setenforce 0
+      when: ansible_os_family == 'RedHat'
   roles:
   post_tasks:
