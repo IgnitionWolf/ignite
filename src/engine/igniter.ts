@@ -31,7 +31,7 @@ export default class Igniter {
       this.provider.bootstrap()
     }
 
-    // await this.provider.up()
+    await this.provider.up()
   }
 
   async destroy() {
@@ -39,8 +39,8 @@ export default class Igniter {
       throw new CLIError("The machine hasn't been ignited, type 'ignite up' to get it running.")
     }
 
-    // await this.provider.destroy() // llama destroy()
-    await this.environment.destroy() // destruye el directorio donde se corre destroy()
+    await this.provider.destroy()
+    await this.environment.destroy()
   }
 
   async ensureStatus(onlySetup?: boolean) {

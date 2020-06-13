@@ -1,7 +1,7 @@
 import Package from './package'
 
 export default class ApachePackage extends Package {
-  install = 'geerlingguy.apache'
+  name = 'geerlingguy.apache'
 
   configFilename = 'apache.yml'
 

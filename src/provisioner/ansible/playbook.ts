@@ -57,11 +57,16 @@ export class AnsiblePlaybook implements AnsiblePlaybookInterface {
   save(): void {
     const original = YAML.parse(fs.readFileSync(this.filename).toString('UTF-8'))
 
-    fs.writeFileSync(this.filename, YAML.stringify(_.merge(original, {
-      vars_files: this.vars_files,
-      roles: this.roles,
-      pre_tasks: this.pre_tasks,
-      post_tasks: this.post_tasks,
-    })))
+    original[0].roles = original[0].roles || []
+    original[0].pre_tasks = original[0].pre_tasks || []
+    original[0].vars_files = original[0].vars_files || []
+    original[0].post_tasks = original[0].post_tasks || []
+
+    original[0].roles = [...this.roles, ...original[0].roles]
+    original[0].vars_files = [...this.vars_files, ...original[0].vars_files]
+    original[0].pre_tasks = [...this.pre_tasks, ...original[0].pre_tasks]
+    original[0].post_tasks = [...this.post_tasks, ...original[0].post_tasks]
+
+    fs.writeFileSync(this.filename, YAML.stringify(original))
   }
 }

@@ -9,6 +9,7 @@ import IgnitefileSite from '../environment/ignitefile/site'
 
 /**
  * The engine in charge of provisioning the machine.
+ * (e.g: Ansible, Puppet, Chef, etc..)
  */
 export default abstract class Provisioner {
   provider: VagrantProvider
@@ -45,6 +46,11 @@ export default abstract class Provisioner {
    * @param {Array<string>} utilities the utilities to install
    */
   abstract registerUtilities(utilities: Array<string>): void;
+
+  /**
+   * Save/write all the files after everything has been processed.
+   */
+  abstract save(): void;
 
   /**
    * Converts an IgnitefileDependency to a Package.

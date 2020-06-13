@@ -1,7 +1,7 @@
 import Package from './package'
 
 export default class ComposerPackage extends Package {
-  install = 'geerlingguy.composer'
+  name = 'geerlingguy.composer'
 
   get configuration(): object {
     return {}

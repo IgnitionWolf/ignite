@@ -56,10 +56,10 @@ export default class AnsibleProvisioner extends Provisioner {
         }
       }
 
-      this.playbook.post_tasks.push([task, {
+      this.playbook.post_tasks.unshift(task, {
         shell: `sudo chown vagrant:vagrant -R ${destination}`,
         become: 'yes',
-      }])
+      })
     })
   }
 
@@ -85,7 +85,10 @@ export default class AnsibleProvisioner extends Provisioner {
        */
       const role: any = {
         role: pkg.name,
-        when: (pkg.conditional() ? pkg.conditional() : undefined),
+      }
+
+      if (pkg.conditional()) {
+        role.when = pkg.conditional()
       }
 
       if (pkg.configFilename) {
@@ -136,5 +139,10 @@ export default class AnsibleProvisioner extends Provisioner {
     })
 
     this.playbook.pre_tasks.push(task)
+  }
+
+  save() {
+    this.playbook.save()
+    this.galaxy.save()
   }
 }

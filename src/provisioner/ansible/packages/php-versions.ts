@@ -1,7 +1,7 @@
 import Package from '../../package'
 
 export default class PhpVersionsPackage extends Package {
-  install = 'geerlingguy.php-versions'
+  name = 'geerlingguy.php-versions'
 
   configFilename = 'php-versions.yml'
 

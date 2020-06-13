@@ -1,7 +1,7 @@
 import Package from './package'
 
 export default class PhpPackage extends Package {
-  install = 'geerlingguy.php'
+  name = 'geerlingguy.php'
 
   configFilename = 'php.yml'
 

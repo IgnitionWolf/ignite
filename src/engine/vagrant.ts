@@ -71,15 +71,15 @@ export default class VagrantProvider {
     const buffer = await this.exec('vagrant status')
 
     if (buffer.indexOf('running') !== -1) {
-      return ProviderStatus.Running
+      return VagrantStatus.Running
     }
     if (buffer.indexOf('off') !== -1) {
-      return ProviderStatus.Offline
+      return VagrantStatus.Offline
     }
     if (buffer.indexOf('saved') !== -1) {
-      return ProviderStatus.Suspended
+      return VagrantStatus.Suspended
     }
-    return ProviderStatus.Unknown
+    return VagrantStatus.Unknown
   }
 
   /**

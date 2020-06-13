@@ -1,7 +1,7 @@
 import Package from './package'
 
 export default class NodeJSPackage extends Package {
-  install = 'geerlingguy.nodejs'
+  name = 'geerlingguy.nodejs'
 
   configFilename = 'nodejs.yml'
 
