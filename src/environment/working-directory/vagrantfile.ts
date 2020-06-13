@@ -4,6 +4,8 @@ import * as path from 'path'
 export default class Vagrantfile {
   workingDirectory: WorkingDirectory
 
+  syncFolders: Array<{path: string; dest: string}> = [];
+
   constructor(workingDirectory: WorkingDirectory) {
     this.workingDirectory = workingDirectory
   }

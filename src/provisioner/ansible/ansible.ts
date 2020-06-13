@@ -6,28 +6,72 @@ import * as _ from 'lodash'
 import {CLIError} from '@oclif/errors'
 import IgnitefileTask from '../../environment/ignitefile/task'
 import {AnsiblePlaybook} from './playbook'
-import VagrantBridge from '../../engine/vagrant'
+import VagrantProvider from '../../engine/vagrant'
 import IgnitefileDependency from '../../environment/ignitefile/dependency'
-import Package from '../package'
 import AnsibleGalaxy from './galaxy'
+import IgnitefileSite from '../../environment/ignitefile/site'
+import Package from '../package'
 
 export default class AnsibleProvisioner extends Provisioner {
   playbook: AnsiblePlaybook;
 
   galaxy: AnsibleGalaxy;
 
-  constructor(provider: VagrantBridge) {
+  constructor(provider: VagrantProvider) {
     super(provider)
+    this.directory = path.join(this.workingDirectory.directory, 'ansible')
     this.playbook = new AnsiblePlaybook(this)
     this.galaxy = new AnsibleGalaxy(this)
   }
 
-  registerPackages(packages: Array<IgnitefileDependency>): void {
-    packages.forEach((dependency: IgnitefileDependency) => {
-      const pkg = new Package()
+  registerSites(sites: Array<IgnitefileSite>): void {
+    sites.forEach((site: IgnitefileSite) => {
+      const destination = `/var/www/${site.hostname}`
+      let task: object = {
+        name: `Installing site: ${site.hostname}`,
+      }
+
+      if (site?.git) {
+        task = {
+          ...task,
+          git: {
+            repo: site.git,
+            dest: destination,
+            update: 'no',
+            accept_hostkey: 'yes',
+          },
+        }
+      } else if (site?.path) {
+        if (!fs.existsSync(site.path)) {
+          throw new CLIError(`The site path ${site.path} does not exist.`)
+        }
+
+        const directory = `/vagrant/sites/${path.basename(site.path)}`
+        const vagrantfile = this.provider.environment.workingDirectory.vagrantfile
+        vagrantfile.syncFolders.push({path: site.path, dest: directory})
+
+        task = {
+          ...task,
+          command: `cp -rf ${directory} ${destination}`,
+        }
+      }
+
+      this.playbook.post_tasks.push([task, {
+        shell: `sudo chown vagrant:vagrant -R ${destination}`,
+        become: 'yes',
+      }])
+    })
+  }
+
+  registerDependencies(dependencies: Array<IgnitefileDependency | Package>): void {
+    dependencies.forEach((dependency: IgnitefileDependency | Package) => {
+      let pkg
+      if (dependency instanceof Package) {
+        pkg = dependency
+      } else pkg = this.convertPackage(dependency)
 
       // Update the requirements.yml file
-      this.galaxy.add(pkg.install)
+      this.galaxy.add(pkg.name)
 
       // Create the configuration file
       if (pkg.configFilename) {
@@ -40,7 +84,7 @@ export default class AnsibleProvisioner extends Provisioner {
        * Update the playbook file to add the new role.
        */
       const role: any = {
-        role: pkg.install,
+        role: pkg.name,
         when: (pkg.conditional() ? pkg.conditional() : undefined),
       }
 
@@ -88,7 +132,7 @@ export default class AnsibleProvisioner extends Provisioner {
         name: '{{ item }}',
         state: 'present',
       },
-      with_list: utilities,
+      with_list: utilities.concat(['git', 'curl', 'vim', 'nano']),
     })
 
     this.playbook.pre_tasks.push(task)

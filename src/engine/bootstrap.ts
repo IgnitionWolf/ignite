@@ -1,14 +1,11 @@
 import Environment from '../environment/environment'
 import Provisioner from '../provisioner/provisioner'
 import {CLIError} from '@oclif/errors'
-import * as fs from 'fs-extra'
-import * as path from 'path'
-import * as YAML from 'yaml'
-import * as _ from 'lodash'
-import IgnitefileSite from '../environment/ignitefile/site'
-import IgnitefileDependency from '../environment/ignitefile/dependency'
-import { AnsiblePlaybookInterface } from '../provisioner/ansible/playbook'
 
+/**
+ * This starts all the processes to get the working directory ready.
+ * Afterwards, it will be ready for Vagrant to start the machine.
+ */
 export default class Bootstrap {
   environment: Environment
 
@@ -28,16 +25,14 @@ export default class Bootstrap {
   }
 
   handleSites(): void {
-
+    this.provisioner.registerSites(this.environment.ignitefile.sites)
   }
 
   handlePackages(): void {
-    const packages = this.environment.ignitefile.dependencies
-    this.provisioner.registerPackages(packages)
+    this.provisioner.registerDependencies(this.environment.ignitefile.dependencies)
   }
 
   handleCommon(): void {
-    // 'git', 'curl', 'vim', 'nano'
     this.provisioner.registerUtilities(this.environment.ignitefile.utilities)
 
     this.provisioner.registerTasks(this.environment.ignitefile.tasks)

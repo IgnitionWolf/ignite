@@ -4,6 +4,7 @@ import * as YAML from 'yaml'
 import * as _ from 'lodash'
 import * as fs from 'fs-extra'
 import Provisioner from '../provisioner'
+import {CLIError} from '@oclif/errors'
 
 export interface AnsiblePlaybookInterface {
   /**
@@ -37,13 +38,13 @@ export class AnsiblePlaybook implements AnsiblePlaybookInterface {
 
   provisioner: Provisioner;
 
-  vars_files!: Array<string>;
+  vars_files: Array<string> = [];
 
-  roles!: Array<object>;
+  roles: Array<object> = [];
 
-  pre_tasks!: Array<object>;
+  pre_tasks: Array<object> = [];
 
-  post_tasks!: Array<object>;
+  post_tasks: Array<object> = [];
 
   constructor(provisioner: Provisioner) {
     this.provisioner = provisioner

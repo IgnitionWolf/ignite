@@ -5,19 +5,33 @@ import * as fs from 'fs'
 
 // @ts-ignore
 import * as SSHConfig from 'ssh-config'
-import Bootstrapper from '../../bootstrapper/bootstrapper'
-import VagrantBootstrap from '../../bootstrapper/vagrant'
 import Environment from '../environment/environment'
 import AnsibleProvisioner from '../provisioner/ansible/ansible'
+import Bootstrap from './bootstrap'
 
-export default class VagrantBridge {
+export enum VagrantStatus {
+  Running = 'Running',
+  Offline = 'Offline',
+  Suspended = 'Suspended',
+  Unknown = 'Unknown'
+}
+
+export default class VagrantProvider {
   environment: Environment
 
-  bootstrapper: Bootstrapper
+  bootstrapper: Bootstrap
 
   constructor(environment: Environment) {
     this.environment = environment
-    this.bootstrapper = new VagrantBootstrap(environment, new AnsibleProvisioner(this))
+    this.bootstrapper = new Bootstrap(environment, new AnsibleProvisioner(this))
+  }
+
+  /**
+   * Bootstrap the Vagrant files.
+   * @return {void} -
+   */
+  bootstrap(): void {
+    return this.bootstrapper.bootstrap()
   }
 
   /**

@@ -1,4 +1,3 @@
-import VagrantProvider from './provider/vagrant'
 import Environment from '../environment/environment'
 import {CLIError} from '@oclif/errors'
 import {ProviderStatus} from './provider/provider'

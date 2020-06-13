@@ -3,10 +3,9 @@ import * as fs from 'fs-extra'
 import * as YAML from 'yaml'
 import Package from '../packages/package'
 import * as path from 'path'
-import * as _ from 'lodash'
 
 import {CLIError} from '@oclif/errors'
-import { AnsiblePlaybookInterface } from '../bootstrapper'
+import {AnsiblePlaybookInterface} from '../bootstrapper'
 
 export default class AnsibleProvisioner extends Provisioner {
   registerPackage(pkg: Package): void {

@@ -4,6 +4,7 @@ import {CLIError} from '@oclif/errors'
 import * as path from 'path'
 import * as os from 'os'
 import * as fs from 'fs-extra'
+import Vagrantfile from './vagrantfile'
 
 export default class WorkingDirectory {
   static template = path.join(path.parse(process.mainModule.filename).dir, '..', 'environment')
@@ -14,8 +15,11 @@ export default class WorkingDirectory {
 
   environment: Environment
 
+  vagrantfile: Vagrantfile;
+
   constructor(environment: Environment) {
     this.environment = environment
+    this.vagrantfile = new Vagrantfile(this)
   }
 
   /**

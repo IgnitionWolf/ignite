@@ -80,13 +80,8 @@ export default class Metafile extends Basefile implements MetafileInterface {
    * @param {MetafileInterface} value -
    */
   set settings(value: MetafileInterface) {
-    if (value?.id) {
-      this.id = value.id
-    }
-
-    if (value?.name) {
-      this.name = value.name
-    }
+    this.id = value.id
+    this.name = value.name
 
     if (value?.path) {
       this.path = value.path
