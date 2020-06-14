@@ -21,9 +21,12 @@ export default class VagrantProvider {
 
   bootstrapper: Bootstrap
 
-  constructor(environment: Environment) {
+  verbose: boolean
+
+  constructor(environment: Environment, verbose: boolean) {
     this.environment = environment
     this.bootstrapper = new Bootstrap(environment, new AnsibleProvisioner(this))
+    this.verbose = verbose
   }
 
   /**
@@ -172,9 +175,9 @@ export default class VagrantProvider {
       const process = spawn(args.shift() || '', args, {cwd: directory})
       let result: string
 
-      console.log(`> ${command}`)
+      this.log(`> ${command}`)
       process.stdout.on('data', data => {
-        console.log(data.toString())
+        this.log(data.toString())
         result = data
       })
 
@@ -187,5 +190,15 @@ export default class VagrantProvider {
         return resolve(result)
       })
     })
+  }
+
+  /**
+   * Helper function to log if verbose.
+   * @param {string} message -
+   */
+  log(message: string): void {
+    if (this.verbose === true) {
+      console.log(message)
+    }
   }
 }

@@ -17,7 +17,7 @@ export default class Igniter {
     this.verbose = verbose
 
     if (this.environment.isSetup()) {
-      this.provider = new VagrantProvider(this.environment)
+      this.provider = new VagrantProvider(this.environment, this.verbose)
     }
   }
 
@@ -29,7 +29,7 @@ export default class Igniter {
     this.environment.create()
 
     // We need to create this here to prevent some data assigning issues
-    this.provider = new VagrantProvider(this.environment)
+    this.provider = new VagrantProvider(this.environment, this.verbose)
 
     if (this.environment.hadToSetup) {
       this.provider.bootstrap()
