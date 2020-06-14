@@ -38,8 +38,9 @@ export default abstract class Provisioner {
   /**
    * Prepare all the required steps for Ansible to perform a task.
    * @param {Array<IgnitefileTask>} tasks the task to perform
+   * @param {string=} where wheter it's a pre-task or a post-task (default is post)
    */
-  abstract registerTasks(tasks: Array<IgnitefileTask>): void;
+  abstract registerTasks(tasks: Array<IgnitefileTask>, where?: string): void;
 
   /**
    * Prepare all the required steps for Ansible to install an utility.

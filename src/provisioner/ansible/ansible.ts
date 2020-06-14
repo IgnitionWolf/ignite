@@ -11,6 +11,7 @@ import IgnitefileDependency from '../../environment/ignitefile/dependency'
 import AnsibleGalaxy from './galaxy'
 import IgnitefileSite from '../../environment/ignitefile/site'
 import Package from '../package'
+import getSiteTypeByName from '../../engine/site-types/factory'
 
 export default class AnsibleProvisioner extends Provisioner {
   playbook: AnsiblePlaybook;
@@ -26,7 +27,7 @@ export default class AnsibleProvisioner extends Provisioner {
 
   registerSites(sites: Array<IgnitefileSite>): void {
     sites.forEach((site: IgnitefileSite) => {
-      const destination = `/var/www/${site.hostname}`
+      const destination = this.getSiteDestination(site)
       let task: object = {
         name: `Installing site: ${site.hostname}`,
       }
@@ -60,6 +61,29 @@ export default class AnsibleProvisioner extends Provisioner {
         shell: `sudo chown vagrant:vagrant -R ${destination}`,
         become: 'yes',
       })
+
+      // Check some site type related tasks
+      if (site?.type) {
+        // We'll need to assign the destination path to the tasks
+        // as this is generated on the runtime
+        const siteType = getSiteTypeByName(site.type)
+        siteType.post_tasks = siteType.post_tasks.map((task: IgnitefileTask) => {
+          task.path = destination
+          return task
+        })
+
+        siteType.pre_tasks = siteType.pre_tasks.map((task: IgnitefileTask) => {
+          task.path = destination
+          return task
+        })
+
+        this.registerTasks(siteType.pre_tasks, 'before')
+        this.registerTasks(siteType.post_tasks, 'after')
+
+        if (!site?.public_folder) {
+          site.public_folder = siteType.public_folder
+        }
+      }
     })
   }
 
@@ -72,6 +96,10 @@ export default class AnsibleProvisioner extends Provisioner {
 
       // Update the requirements.yml file
       this.galaxy.add(pkg.name)
+
+      if (dependency.name === 'apache') {
+        this.handleApache(pkg)
+      }
 
       // Create the configuration file
       if (pkg.configFilename) {
@@ -99,7 +127,8 @@ export default class AnsibleProvisioner extends Provisioner {
     })
   }
 
-  registerTasks(tasks: Array<IgnitefileTask>): void {
+  registerTasks(tasks: Array<IgnitefileTask>, where?: string): void {
+    where = where || 'after'
     tasks.forEach((task: IgnitefileTask) => {
       if (task?.inline) {
         // Apply some rules here..
@@ -115,7 +144,8 @@ export default class AnsibleProvisioner extends Provisioner {
           args: {...task?.args, chdir: task.path},
         }, extra)
 
-        this.playbook.post_tasks.push(ansibleTask)
+        if (where === 'after') this.playbook.post_tasks.push(ansibleTask)
+        else this.playbook.pre_tasks.push(ansibleTask)
       } else if (task?.file) {
         const ansibleTask = {
           name: `Execute task: ${task.inline}`,
@@ -123,8 +153,9 @@ export default class AnsibleProvisioner extends Provisioner {
           args: {...task?.args, chdir: task.path},
         }
 
-        this.playbook.post_tasks.push(ansibleTask)
-      }
+        if (where === 'after') this.playbook.post_tasks.push(ansibleTask)
+        else this.playbook.pre_tasks.push(ansibleTask)
+      } else throw new CLIError(`The task with path ${task.path} needs either inline, or file attribute.`)
     })
   }
 
@@ -144,5 +175,33 @@ export default class AnsibleProvisioner extends Provisioner {
   save() {
     this.playbook.save()
     this.galaxy.save()
+  }
+
+  /**
+   * We need to add the virtual host in the Package extensions.
+   * This is a workaround..
+   * TODO: Fix a flexible way to handle this, for future packages.
+   * @param {Package} pkg apache package
+   */
+  private handleApache(pkg: Package): void {
+    const sites = this.provider.environment.ignitefile.sites
+    pkg.extensions = sites.map((site: IgnitefileSite) => {
+      const conf = {
+        documentroot: path.join(this.getSiteDestination(site), site.public_folder || ''),
+        servername: `www.${site.hostname}`,
+        serveralias: site.hostname,
+      }
+
+      if (site.hostname.indexOf('www.') !== -1) {
+        conf.servername = site.hostname
+        conf.serveralias = site.hostname.replace('www.', '')
+      }
+
+      return conf
+    })
+  }
+
+  private getSiteDestination(site: IgnitefileSite): string {
+    return `/var/www/${site.hostname}`
   }
 }

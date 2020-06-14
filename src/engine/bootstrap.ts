@@ -59,7 +59,8 @@ export default class Bootstrap {
    */
   handleCommon(): void {
     this.provisioner.registerUtilities(this.environment.ignitefile.utilities)
-    this.provisioner.registerTasks(this.environment.ignitefile.tasks)
+    this.provisioner.registerTasks(this.environment.ignitefile.pre_tasks, 'before')
+    this.provisioner.registerTasks(this.environment.ignitefile.tasks, 'after')
   }
 
   /**

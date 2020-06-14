@@ -12,6 +12,7 @@ interface IgnitefileInterface {
   meta: IgnitefileMeta;
   dependencies?: Array<IgnitefileDependency>;
   sites?: Array<IgnitefileSite>;
+  pre_tasks?: Array<IgnitefileTask>;
   tasks?: Array<IgnitefileTask>;
   utilities?: Array<string>;
 }
@@ -30,6 +31,8 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
   sites: Array<IgnitefileSite> = []
 
   tasks: Array<IgnitefileTask> = []
+
+  pre_tasks: Array<IgnitefileTask> = []
 
   utilities: Array<string> = []
 
@@ -67,6 +70,10 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
 
     if (content?.sites) {
       this.sites = content.sites
+    }
+
+    if (content?.pre_tasks) {
+      this.pre_tasks = content.pre_tasks
     }
 
     if (content?.tasks) {

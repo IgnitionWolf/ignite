@@ -2,6 +2,8 @@ import {Command, flags} from '@oclif/command'
 import Environment from '../environment/environment'
 import Igniter from '../engine/igniter'
 import cli from 'cli-ux'
+import LaravelSiteType from '../engine/site-types/laravel'
+import {CLIError} from '@oclif/errors'
 
 export default class UpCommand extends Command {
   static description = `Ignite an environment based on Ignitefile
