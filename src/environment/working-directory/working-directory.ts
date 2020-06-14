@@ -7,7 +7,7 @@ import * as fs from 'fs-extra'
 import Vagrantfile from './vagrantfile'
 
 export default class WorkingDirectory {
-  static template = path.join(path.parse(process.mainModule.filename).dir, '..', 'environment')
+  static template = path.join('..', '..', '..', 'environment')
 
   static directoriesPath = path.join(os.homedir(), 'ignite')
 

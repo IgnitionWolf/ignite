@@ -1,11 +1,11 @@
 {
-  "name": "ignite",
-  "version": "2.0.0",
-  "author": "Ignite Wolf",
+  "name": "@ignitionwolf/ignite",
+  "version": "1.0.0",
+  "author": "Ignition Wolf",
   "bin": {
     "ignite": "./bin/run"
   },
-  "bugs": "https://github.com/IgniteWolf/ignite/issues",
+  "bugs": "https://github.com/IgnitionWolf/ignite/issues",
   "dependencies": {
     "@oclif/command": "^1.6.1",
     "@oclif/config": "^1.15.1",
@@ -48,7 +48,7 @@
     "/npm-shrinkwrap.json",
     "/oclif.manifest.json"
   ],
-  "homepage": "https://github.com/IgniteWolf/ignite",
+  "homepage": "https://github.com/IgnitionWolf/ignite",
   "keywords": [
     "oclif"
   ],
@@ -61,7 +61,7 @@
       "@oclif/plugin-help"
     ]
   },
-  "repository": "IgniteWolf/ignite",
+  "repository": "IgnitionWolf/ignite",
   "scripts": {
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint . --ext .ts --config .eslintrc",
