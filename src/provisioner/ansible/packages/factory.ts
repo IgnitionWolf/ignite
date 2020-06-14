@@ -6,14 +6,18 @@ import RemiRepositoryPackage from './repo-remi'
 import NodeJSPackage from './nodejs'
 import ComposerPackage from './composer'
 import Package from '../../package'
+import EpelRepositoryPackage from './repo-epel'
+import RedisPackage from './redis'
 
 const PackagesFactory = {
   php: PhpPackage,
   apache: ApachePackage,
   'php-versions': PhpVersionsPackage,
   'remi-repo': RemiRepositoryPackage,
+  'epel-repo': EpelRepositoryPackage,
   nodejs: NodeJSPackage,
   composer: ComposerPackage,
+  redis: RedisPackage,
 } as {
   [key: string]: typeof Package;
 }

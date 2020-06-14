@@ -200,6 +200,7 @@ Supported Packages
 * PHP `php`
 * Composer `composer`
 * NodeJS `nodejs`
+* Redis `redis`
 
 
 ```
