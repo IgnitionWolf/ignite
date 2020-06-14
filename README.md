@@ -14,6 +14,12 @@ This is still in early stages, it is fully functional but more features like pac
 <!-- toc -->
 * [Usage](#usage)
 * [Commands](#commands)
+* [Dependencies](#dependencies)
+* [Sites](#sites)
+* [Site Types](#sitetypes)
+* [Tasks](#tasks)
+* [Utilities](#utilities)
+
 <!-- tocstop -->
 # Usage
 <!-- usage -->
@@ -184,7 +190,8 @@ OPTIONS
 ```
 <!-- commandsstop -->
 
-## Dependencies
+# Dependencies
+<!-- dependencies -->
 
 A "dependency" is a configuration class that links the required dependency to an Ansible role. You can't directly install an Ansible role, it has to be supported by Ignite first. If you don't see a package listed here that you need, please write an issue or a pull request with the respective Ansible role. It's important to note that it must work in different linux distributions.
 
@@ -206,8 +213,10 @@ dependencies:
   - name: apache
   - name: nodejs
 ```
+<!-- dependenciesstop -->
 
-## Site
+# Sites
+<!-- sites -->
 
 You can load a site project files from a local path in your machine or from a git repository.
 
@@ -223,15 +232,19 @@ sites:
 ```
 
 You will need to add these hostnames to your `hosts` file with the machine IP found at the metadata section of the Ignitefile.
+<!-- sitesstop -->
 
-## Site Type
+# Site Types
+<!-- sitetypes -->
 
 A "site type" is a set of necessary configuration/tasks that needs to be executed in order to prepare for a specific website structure. For example, this sets up the virtual hosts in the correct directory and assigns directory permissions.
 
 Supported Site Types
 * Laravel
+<!-- sitetypesstop -->
 
-## Tasks
+# Tasks
+<!-- tasks -->
 
 You can run shell commands to do any extra provisioning work you may need in order to get your site working.
 
@@ -246,8 +259,10 @@ tasks:
   path: /where/to/run/the/cmd
   inline: ls -l
 ```
+<!-- tasksstop -->
 
-## Utilities
+# Utilities
+<!-- utilities -->
 
 You can install any extra software by adding it to this list.
 
@@ -256,6 +271,7 @@ utilities:
   - htop
   - curl
 ```
+<!-- utilitiesstop -->
 
 ## Built With
 
