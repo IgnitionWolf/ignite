@@ -18,21 +18,18 @@ This is still in early stages, it is fully functional but more features like pac
 * [Sites](#sites)
 * [Site Types](#site-types)
 * [Tasks](#tasks)
+* [Runs before installing dependencies](#runs-before-installing-dependencies)
+* [Runs after installing dependencies](#runs-after-installing-dependencies)
 * [Utilities](#utilities)
-
 <!-- tocstop -->
 # Usage
 <!-- usage -->
 ```sh-session
 $ npm install -g ignite
-$ ignite init
-initializing Ignitefile... initialized
-
-# Here you will need to modify the Ignitefile per your needs.
-
-$ ignite up
-booting the machine... booted
-
+$ ignite COMMAND
+running command...
+$ ignite (-v|--version|version)
+ignite/2.0.0 linux-x64 node-v10.19.0
 $ ignite --help [COMMAND]
 USAGE
   $ ignite COMMAND
@@ -41,7 +38,52 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
+* [`ignite destroy`](#ignite-destroy)
+* [`ignite down`](#ignite-down)
 * [`ignite help [COMMAND]`](#ignite-help-command)
+* [`ignite init [NAME]`](#ignite-init-name)
+* [`ignite ssh`](#ignite-ssh)
+* [`ignite ssh-config`](#ignite-ssh-config)
+* [`ignite status`](#ignite-status)
+* [`ignite suspend`](#ignite-suspend)
+* [`ignite up`](#ignite-up)
+
+## `ignite destroy`
+
+Turn off an environment machine
+
+```
+USAGE
+  $ ignite destroy
+
+OPTIONS
+  -f, --force      proceed forcefully
+  -p, --path=path  target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  This will put the environment machine offline.
+```
+
+_See code: [src/commands/destroy.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/destroy.ts)_
+
+## `ignite down`
+
+Turn off an environment's machine
+
+```
+USAGE
+  $ ignite down
+
+OPTIONS
+  -p, --path=path  Target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  This will put the environment's machine offline.
+```
+
+_See code: [src/commands/down.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/down.ts)_
 
 ## `ignite help [COMMAND]`
 
@@ -58,136 +100,114 @@ OPTIONS
   --all  see all commands in CLI
 ```
 
-* [`ignite init [NAME]`](#ignite-init-command)
+_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v3.0.1/src/commands/help.ts)_
 
 ## `ignite init [NAME]`
 
-create the Ignitefile
+Initialize a Ignitefile configuration file
 
 ```
 USAGE
-  $ ignite init
-
-ARGUMENTS
-  NAME  (optional)  environment/machine name
+  $ ignite init [NAME]
 
 OPTIONS
-  --path  target path
-  --help  more information about this command
+  -p, --path=path  Target path (optional)
+
+DESCRIPTION
+  Modify this file to instruct Ignite on how to setup your desired environment.
 ```
 
-* [`ignite up`](#ignite-up-command)
-
-## `ignite up`
-
-start the Vagrant machine
-
-```
-USAGE
-  $ ignite up
-
-OPTIONS
-  --path  target path
-  --verbose verbose output
-  --help  more information about this command
-```
-
-* [`ignite destroy`](#ignite-destroy-command)
-
-## `ignite destroy`
-
-destroy the Vagrant machine
-
-```
-USAGE
-  $ ignite destroy
-
-OPTIONS
-  --path  target path
-  --force  destroy forcefully
-  --verbose verbose output
-  --help  more information about this command
-```
-
-* [`ignite ssh`](#ignite-ssh-command)
+_See code: [src/commands/init.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/init.ts)_
 
 ## `ignite ssh`
 
-SSH in the Vagrant machine
+SSH in the provisioned machine
 
 ```
 USAGE
   $ ignite ssh
 
 OPTIONS
-  --path  target path
-  --verbose verbose output
-  --help  more information about this command
+  -p, --path=path  Target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  This will not load keys
 ```
 
-* [`ignite down`](#ignite-down-command)
-
-## `ignite down`
-
-power off the Vagrant machine
-
-```
-USAGE
-  $ ignite down
-
-OPTIONS
-  --path  target path
-  --verbose verbose output
-  --help  more information about this command
-```
-
-* [`ignite suspend`](#ignite-suspend-command)
-
-## `ignite suspend`
-
-suspend the Vagrant machine
-
-```
-USAGE
-  $ ignite suspend
-
-OPTIONS
-  --path  target path
-  --verbose verbose output
-  --help  more information about this command
-```
-
-* [`ignite status`](#ignite-status-command)
-
-## `ignite status`
-
-status of the Vagrant machine
-
-```
-USAGE
-  $ ignite status
-
-OPTIONS
-  --path  target path
-  --verbose verbose output
-  --help  more information about this command
-```
-
-* [`ignite ssh-config`](#ignite-ssh-config-command)
+_See code: [src/commands/ssh.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/ssh.ts)_
 
 ## `ignite ssh-config`
 
-get the SSH configuration of the Vagrant machine (useful to configure VSCode remote)
+Get the SSH config to access the machine
 
 ```
 USAGE
   $ ignite ssh-config
 
 OPTIONS
-  --path  target path
-  --verbose verbose output
-  --help  more information about this command
+  -p, --path=path  Target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  You can use this to configure your IDE remote connection.
 ```
+
+_See code: [src/commands/ssh-config.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/ssh-config.ts)_
+
+## `ignite status`
+
+Get the status of the environment machine.
+
+```
+USAGE
+  $ ignite status
+
+OPTIONS
+  -p, --path=path  Target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  This will tell you if the machine is running, offline, or suspended.
+```
+
+_See code: [src/commands/status.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/status.ts)_
+
+## `ignite suspend`
+
+Turn off an environment machine
+
+```
+USAGE
+  $ ignite suspend
+
+OPTIONS
+  -p, --path=path  Target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  This will put the environment machine offline.
+```
+
+_See code: [src/commands/suspend.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/suspend.ts)_
+
+## `ignite up`
+
+Ignite an environment based on Ignitefile
+
+```
+USAGE
+  $ ignite up
+
+OPTIONS
+  -p, --path=path  Target path (optional)
+  -v, --verbose    verbose output
+
+DESCRIPTION
+  This might take some time while the configuration is processed and the machine is ignited.
+```
+
+_See code: [src/commands/up.ts](https://github.com/IgniteWolf/ignite/blob/v2.0.0/src/commands/up.ts)_
 <!-- commandsstop -->
 
 # Dependencies
