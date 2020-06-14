@@ -1,6 +1,5 @@
 import Environment from '../environment/environment'
 import Provisioner from '../provisioner/provisioner'
-import {CLIError} from '@oclif/errors'
 
 /**
  * This starts all the processes to get the working directory ready.

@@ -18,7 +18,7 @@ export default class InitCommand extends Command {
     const ignitefile = new Ignitefile(baseDir)
     ignitefile.create()
 
-    ignitefile.set('ignite.name', args.name ?? null)
+    ignitefile.meta.name = args.name
     ignitefile.save()
 
     this.log(`The Ignitefile has been created at ${baseDir}.`)

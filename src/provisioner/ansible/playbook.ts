@@ -1,10 +1,7 @@
-import WorkingDirectory from '../../environment/working-directory/working-directory'
 import * as path from 'path'
 import * as YAML from 'yaml'
-import * as _ from 'lodash'
 import * as fs from 'fs-extra'
 import Provisioner from '../provisioner'
-import {CLIError} from '@oclif/errors'
 
 export interface AnsiblePlaybookInterface {
   /**

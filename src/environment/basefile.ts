@@ -1,7 +1,7 @@
 import {CLIError} from '@oclif/errors'
 import * as path from 'path'
 import * as fs from 'fs-extra'
-import Environment from '../environment'
+import Environment from './environment'
 
 /**
  * This is the base class for Ignitefile and Metafile.

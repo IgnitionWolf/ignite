@@ -10,8 +10,12 @@ export default class Igniter {
 
   environment: Environment
 
-  constructor(environment: Environment) {
+  verbose: boolean
+
+  constructor(environment: Environment, verbose: boolean) {
     this.environment = environment
+    this.verbose = verbose
+
     if (this.environment.isSetup()) {
       this.provider = new VagrantProvider(this.environment)
     }

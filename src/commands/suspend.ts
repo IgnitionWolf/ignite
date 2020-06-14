@@ -8,13 +8,14 @@ export default class SuspendCommand extends Command {
 
   static flags = {
     path: flags.string({char: 'p', description: 'Target path (optional)'}),
+    verbose: flags.boolean({char: 'v', description: 'verbose output'}),
   }
 
   async run() {
     const {flags} = this.parse(SuspendCommand)
     const baseDir = flags.path || process.cwd()
 
-    const igniter = new Igniter(new Environment(baseDir))
+    const igniter = new Igniter(new Environment(baseDir), flags.verbose || false)
     await igniter.ensureStatus()
     await igniter.provider.suspend()
   }

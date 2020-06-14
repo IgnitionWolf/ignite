@@ -7,6 +7,7 @@ import Basefile from '../basefile'
 import * as fs from 'fs-extra'
 import * as path from 'path'
 import * as YAML from 'yaml'
+import * as _ from 'lodash'
 
 interface IgnitefileInterface {
   meta: IgnitefileMeta;
@@ -45,7 +46,7 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
       throw new CLIError('The Ignitefile already exists.')
     }
 
-    fs.copyFileSync(path.join(__dirname, 'templates', this.filename), target)
+    fs.copyFileSync(path.join(__dirname, this.filename), target)
     this.load() // Load the template content after copying it..
   }
 
@@ -83,6 +84,24 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
     if (content?.utilities) {
       this.utilities = content.utilities
     }
+  }
+
+  /**
+   * Save/create the ignitefile file.
+   */
+  save(): void {
+    const template: IgnitefileInterface = YAML.parse(fs.readFileSync(this.filename).toString('UTF-8'))
+
+    const settings = _.merge(template, {
+      meta: this.meta,
+      dependencies: (this.dependencies.length > 0) ? this.dependencies : 'eeeeempty',
+      sites: (this.sites.length > 0) ? this.sites : 'eeeeempty',
+      pre_tasks: (this.pre_tasks.length > 0) ? this.pre_tasks : 'eeeeempty',
+      tasks: (this.tasks.length > 0) ? this.tasks : 'eeeeempty',
+      utilities: (this.utilities.length > 0) ? this.utilities : 'eeeeempty',
+    })
+
+    fs.writeFileSync(this.getPath(), YAML.stringify(settings).replace(new RegExp('eeeeempty', 'g'), ''))
   }
 
   /**

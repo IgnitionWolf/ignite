@@ -10,6 +10,7 @@ export default class SuspendCommand extends Command {
   static flags = {
     path: flags.string({char: 'p', description: 'target path (optional)'}),
     force: flags.boolean({char: 'f', description: 'proceed forcefully'}),
+    verbose: flags.boolean({char: 'v', description: 'verbose output'}),
   }
 
   async run() {
@@ -25,7 +26,7 @@ export default class SuspendCommand extends Command {
     }
 
     if (proceed) {
-      const igniter = new Igniter(new Environment(baseDir))
+      const igniter = new Igniter(new Environment(baseDir), flags.verbose || false)
       // await igniter.ensureStatus(true)
       await igniter.destroy()
       this.log('The environment has been successfully destroyed.')

@@ -1,4 +1,3 @@
-import {CLIError} from '@oclif/errors'
 import Package from './package'
 import VagrantProvider from '../engine/vagrant'
 import IgnitefileTask from '../environment/ignitefile/task'
