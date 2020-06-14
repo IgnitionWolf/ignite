@@ -16,7 +16,7 @@ This is still in early stages, it is fully functional but more features like pac
 * [Commands](#commands)
 * [Dependencies](#dependencies)
 * [Sites](#sites)
-* [Site Types](#sitetypes)
+* [Site Types](#site-types)
 * [Tasks](#tasks)
 * [Utilities](#utilities)
 
