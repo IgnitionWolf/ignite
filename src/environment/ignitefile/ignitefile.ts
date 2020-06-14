@@ -21,6 +21,8 @@ interface IgnitefileInterface {
 export default class Ignitefile extends Basefile implements IgnitefileInterface {
   filename = 'Ignitefile.yml'
 
+  template = path.resolve(__dirname, '..', '..', '..', 'templates', this.filename)
+
   meta: IgnitefileMeta = {
     name: 'Box-Name',
     box: 'centos/7',
@@ -46,7 +48,7 @@ export default class Ignitefile extends Basefile implements IgnitefileInterface 
       throw new CLIError('The Ignitefile already exists.')
     }
 
-    fs.copyFileSync(path.join(__dirname, this.filename), target)
+    fs.copyFileSync(this.template, target)
     this.load() // Load the template content after copying it..
   }
 
