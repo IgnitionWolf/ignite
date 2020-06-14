@@ -1,0 +1,41 @@
+# Local development machine information
+meta:
+  name: 'Default Ignite Box'
+  box: 'centos/7'
+  ip: 192.168.10.33
+
+# Sites that will be automatically configured by 
+sites:
+  - hostname: custom.local # You'll have to configure this in your hosts file
+    path: /path/to/project/files # This will be ported to the development machine
+    public_folder: './public' # Relative path in the project to the public directory
+
+  - hostname: laravel.local
+    git: https://github.com/user/laravel-local.git
+    type: laravel
+
+# Must be any supported dependency by Ignite.
+dependencies:
+  - name: php
+    version: 7.4
+    extensions:
+      - gd
+
+  - name: composer
+  - name: apache
+  - name: nodejs
+  - name: git
+
+# Runs before the dependencies are installed.
+pre_tasks:
+  - path: '/var/www/git-example'
+    cmd: 'composer install'
+
+# Runs after the dependencies are installed.
+tasks:
+  - path: '/var/www/git-example'
+    cmd: 'composer install'
+
+# Utilities/programs to install.
+utilities:
+  - htop
