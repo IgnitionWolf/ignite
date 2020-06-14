@@ -6,43 +6,89 @@ ignite
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/@ignitionwolf/ignite.svg)](https://npmjs.org/package/ignite)
 
-Ignite is a high-level utility tool to fire up local environments easily based on a configuration file.
+Ignite is a high-level utility tool to fire up local environments easily based on a configuration file. This is as simple as setting up your Ignitefile (`ignite init` and modify it accordingly), then `ignite up`!.
 
 This works thanks to [Vagrant](https://www.vagrantup.com/downloads.html) and [VirtualBox](https://www.virtualbox.org/wiki/Downloads) or [VMWare](https://my.vmware.com/web/vmware/downloads). This means you will need to install these dependencies first before trying to run Ignite.
 
 This is still in early stages, it is fully functional but more features like packages and site types are still being worked on. In the meanwhile, you're free to submit pull requests with more Ansible packages support and site types default configuration.
 
-## Install
-
-```
-npm install -g @ignitionwolf/ignite
-```
-
 <!-- toc -->
+* [Install](#install)
 * [Usage](#usage)
+* [Creating your Ignitefile](#creating-your-ignitefile)
 * [Commands](#commands)
 * [Dependencies](#dependencies)
 * [Sites](#sites)
 * [Site Types](#site-types)
 * [Tasks](#tasks)
-* [Runs before installing dependencies](#runs-before-installing-dependencies)
-* [Runs after installing dependencies](#runs-after-installing-dependencies)
 * [Utilities](#utilities)
 <!-- tocstop -->
+
+# Install
+
+```
+npm install -g @ignitionwolf/ignite
+```
+
 # Usage
-<!-- usage -->
-```sh-session
-$ npm install -g @ignitionwolf/ignite
-$ ignite COMMAND
-running command...
-$ ignite (-v|--version|version)
-@ignitionwolf/ignite/1.0.2 linux-x64 node-v10.19.0
-$ ignite --help [COMMAND]
-USAGE
-  $ ignite COMMAND
+```
+$ ignite init
+initializing Ignitefile... initialized
+
+$ ignite up
+booting the machine... booted
+
+$ ignite ssh
 ...
 ```
-<!-- usagestop -->
+
+# Creating your Ignitefile
+
+It's as simple as running `ignite init`, however, you can see a detailed template below:
+
+```
+## Local development machine information
+meta:
+  name: 'Default Ignite Box'
+  box: 'centos/7'
+  ip: 192.168.10.33
+
+## Sites that will be automatically configured by 
+sites:
+  - hostname: custom.local ## You'll have to configure this in your hosts file
+    path: /path/to/project/files ## This will be ported to the development machine
+    public_folder: './public' ## Relative path in the project to the public directory
+
+  - hostname: laravel.local
+    git: https://github.com/user/laravel-local.git
+    type: laravel
+
+## Must be any supported dependency by Ignite.
+dependencies:
+  - name: php
+    version: 7.4
+    extensions:
+      - gd
+
+  - name: composer
+  - name: apache
+  - name: nodejs
+
+## Runs before the dependencies are installed.
+pre_tasks:
+  - path: '/var/www/git-example'
+    cmd: 'composer install'
+
+## Runs after the dependencies are installed.
+tasks:
+  - path: '/var/www/git-example'
+    cmd: 'composer install'
+
+## Utilities/programs to install.
+utilities:
+  - htop
+```
+
 # Commands
 <!-- commands -->
 * [`ignite destroy`](#ignite-destroy)
@@ -277,12 +323,12 @@ Supported Site Types
 You can run shell commands to do any extra provisioning work you may need in order to get your site working.
 
 ```
-# Runs before installing dependencies
+## Runs before installing dependencies
 pre_tasks:
   path: /where/to/run/the/cmd
   inline: ls -l
 
-# Runs after installing dependencies
+## Runs after installing dependencies
 tasks:
   path: /where/to/run/the/cmd
   inline: ls -l

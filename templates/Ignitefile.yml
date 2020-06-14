@@ -24,7 +24,6 @@ dependencies:
   - name: composer
   - name: apache
   - name: nodejs
-  - name: git
 
 # Runs before the dependencies are installed.
 pre_tasks:
