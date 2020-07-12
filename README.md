@@ -118,7 +118,7 @@ DESCRIPTION
   This will put the environment machine offline.
 ```
 
-_See code: [src/commands/destroy.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/destroy.ts)_
+_See code: [src/commands/destroy.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/destroy.ts)_
 
 ## `ignite down`
 
@@ -136,7 +136,7 @@ DESCRIPTION
   This will put the environment's machine offline.
 ```
 
-_See code: [src/commands/down.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/down.ts)_
+_See code: [src/commands/down.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/down.ts)_
 
 ## `ignite help [COMMAND]`
 
@@ -170,7 +170,7 @@ DESCRIPTION
   Modify this file to instruct Ignite on how to setup your desired environment.
 ```
 
-_See code: [src/commands/init.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/init.ts)_
+_See code: [src/commands/init.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/init.ts)_
 
 ## `ignite ssh`
 
@@ -188,7 +188,7 @@ DESCRIPTION
   This will not load keys
 ```
 
-_See code: [src/commands/ssh.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/ssh.ts)_
+_See code: [src/commands/ssh.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/ssh.ts)_
 
 ## `ignite ssh-config`
 
@@ -206,7 +206,7 @@ DESCRIPTION
   You can use this to configure your IDE remote connection.
 ```
 
-_See code: [src/commands/ssh-config.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/ssh-config.ts)_
+_See code: [src/commands/ssh-config.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/ssh-config.ts)_
 
 ## `ignite status`
 
@@ -224,7 +224,7 @@ DESCRIPTION
   This will tell you if the machine is running, offline, or suspended.
 ```
 
-_See code: [src/commands/status.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/status.ts)_
+_See code: [src/commands/status.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/status.ts)_
 
 ## `ignite suspend`
 
@@ -242,7 +242,7 @@ DESCRIPTION
   This will put the environment machine offline.
 ```
 
-_See code: [src/commands/suspend.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/suspend.ts)_
+_See code: [src/commands/suspend.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/suspend.ts)_
 
 ## `ignite up`
 
@@ -260,7 +260,7 @@ DESCRIPTION
   This might take some time while the configuration is processed and the machine is ignited.
 ```
 
-_See code: [src/commands/up.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.2/src/commands/up.ts)_
+_See code: [src/commands/up.ts](https://github.com/IgnitionWolf/ignite/blob/v1.0.3/src/commands/up.ts)_
 <!-- commandsstop -->
 
 # Dependencies
