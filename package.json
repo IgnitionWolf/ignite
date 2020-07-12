@@ -1,6 +1,6 @@
 {
   "name": "@ignitionwolf/ignite",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "author": "Ignition Wolf",
   "bin": {
     "ignite": "./bin/run"
