@@ -3,11 +3,11 @@ import {spawn} from 'child_process'
 import {CLIError} from '@oclif/errors'
 import * as fs from 'fs'
 
-// @ts-ignore
-import * as SSHConfig from 'ssh-config'
 import Environment from '../environment/environment'
 import AnsibleProvisioner from '../provisioner/ansible/ansible'
 import Bootstrap from './bootstrap'
+
+const SSHConfig = require('ssh-config')
 
 export enum VagrantStatus {
   Running = 'Running',
